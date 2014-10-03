@@ -1,0 +1,26 @@
+import javax.swing.*;
+import java.awt.event.*;
+public class ProgramFrame extends JFrame implements ActionListener
+{
+ public ProgramFrame ()
+ {
+   JMenu file = new JMenu ();
+   file.add (new JMenuItem ("New"));
+   file.add (new JMenuItem ("Open"));
+   file.add (new JMenuItem ("Save"));
+   file.add (new JMenuItem ("SaveAs"));
+   file.add (new JMenuItem ("Quit"));
+   JMenuBar fileMenu = new JMenuBar ();
+   fileMenu.add (file);
+   setJMenuBar (fileMenu);   
+  //setLocation (0,0);
+  add (new IntroPanel ());
+  setPreferredSize (new Dimension (500,500));
+  setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+ }
+ 
+ public void actionPerformed (ActionEvent ae)
+ {
+  String a = ae.getActionCommand (); 
+ }
+}
