@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
+
 public class ProgramFrame extends JFrame implements ActionListener
 {
  public ProgramFrame ()
@@ -31,6 +32,7 @@ public class ProgramFrame extends JFrame implements ActionListener
    quitItem.addActionListener (this);
   //setLocation (0,0);
   
+  addKeyListener (new KListen ());
   setVisible (true);
   setSize (new Dimension (500,500));
   setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -39,5 +41,13 @@ public class ProgramFrame extends JFrame implements ActionListener
  public void actionPerformed (ActionEvent ae)
  {
   String a = ae.getActionCommand (); 
+ }
+ 
+ class KListen extends KeyAdapter
+ {
+  public void keyPressed (KeyEvent k)
+  {
+    int a = k.getKeyCode();
+  }
  }
 }
