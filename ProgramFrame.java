@@ -7,7 +7,9 @@ public class ProgramFrame extends JFrame implements ActionListener
  public ProgramFrame ()
  {
    super ("Lawssons");
-   add (new IntroPanel ());
+   //add (new IntroPanel ());
+   DisplayPanel display = new DisplayPanel ();
+   getContentPane().add (display);
    JMenuItem newItem = new JMenuItem ("New");
    JMenuItem openItem = new JMenuItem ("Open");
    JMenuItem saveItem = new JMenuItem ("Save");
@@ -34,7 +36,7 @@ public class ProgramFrame extends JFrame implements ActionListener
   
   addKeyListener (new KListen ());
   setVisible (true);
-  setSize (new Dimension (500,500));
+  setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
   setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
  }
  
