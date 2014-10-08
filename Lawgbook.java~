@@ -2,8 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
 public class Lawgbook
 {
   ArrayList<Student> students = new ArrayList<Student>();
@@ -11,15 +9,12 @@ public class Lawgbook
   ArrayList<Lesson> lessons = new ArrayList<Lesson>();
   Date date;
   String title;
-  String formatDate;
   
   //should probably use polimorphism instead
   NewTableModel model = new NewTableModel();
  public Lawgbook()
  {
-   date = new Date (System.currentTimeMillis());
-   DateFormat format = new SimpleDateFormat ("EEE, d MMM yyyy");
-   formatDate = format.format (date);
+   
  }
  
  public ArrayList<Activity> creatLessonList (int amount)

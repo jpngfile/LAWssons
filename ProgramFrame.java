@@ -42,7 +42,11 @@ public class ProgramFrame extends JFrame implements ActionListener
  
  public void actionPerformed (ActionEvent ae)
  {
-  String a = ae.getActionCommand (); 
+  String a = ae.getActionCommand ();
+  if (a.equals ("Quit"))
+  {
+    System.exit (0);
+  }
  }
  
  class KListen extends KeyAdapter
