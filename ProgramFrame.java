@@ -43,7 +43,19 @@ public class ProgramFrame extends JFrame implements ActionListener
  public void actionPerformed (ActionEvent ae)
  {
   String a = ae.getActionCommand ();
-  if (a.equals ("Quit"))
+  if (a.equals ("New"))
+  {
+  }
+  else if (a.equals ("Save"))
+  {
+  }
+  else if (a.equals ("SaveAs"))
+  {
+  }
+  else if (a.equals ("Open"))
+  {
+  }
+  else if (a.equals ("Quit"))
   {
     System.exit (0);
   }

@@ -14,6 +14,7 @@ public class NewTableModel extends AbstractTableModel
 //     {"First-aid", new Integer (0), new Integer (3), new Integer (1)}
 //   };
   //Will have to reorganize the data to a different form later
+  //will have to convert to take data from lawgbook rather than from itself
   ArrayList<ArrayList<Object>> data = new ArrayList<ArrayList<Object>>();
    int rowCount;
    int colCount;
@@ -92,6 +93,36 @@ public class NewTableModel extends AbstractTableModel
     return true;
   }
   
+  //Assuming there is not more than one student of a given name
+  public ArrayList<Integer> getStudentInfo (String student)
+  {
+    ArrayList<Integer> list = new ArrayList<Integer>();
+    int index = 0;
+    for (int x = 2;x < colNames.size();x++){
+      if (colNames.get(x).equals (student)){
+        index = x;
+        break;
+      }
+    }
+    ArrayList<Object> studentData = data.get(index);
+    for (Object j : studentData)
+    {
+      list.add (new Integer (integerOf (j)));
+    }
+    return list;
+  }
+  
+  public Integer integerOf (Object j)
+  {
+    try
+    {
+      return Integer.parseInt (j.toString());
+    }
+    catch (NumberFormatException e)
+    {
+      return null;
+    }
+  }
   public static boolean isNumeric (String s)
   {
    try

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.*;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 
 /**
  * The main class for displaying the status of a class in the form of a table and interacting with it.
@@ -85,8 +86,10 @@ public class DisplayPanel extends JPanel implements ActionListener
    String a = ae.getActionCommand ();
    if (a.equals ("Add student"))
    {
+     //What does this return if the textfield is empty?
      String studentName = JOptionPane.showInputDialog (this, "Enter the name of the student.");
-     if (studentName != null){
+     if (studentName != null && studentName.length() > 0){
+       System.out.println (studentName);
      model.addColumn (studentName);
      System.out.println ("Added student");
      table.addColumn (new TableColumn(model.getColumnCount() - 1));
@@ -96,14 +99,20 @@ public class DisplayPanel extends JPanel implements ActionListener
    else if (a.equals ("Add activity"))
    {
      String activityName = JOptionPane.showInputDialog (this, "Enter the name of the activity.");
-     if (activityName != null){
+     if (activityName != null && activityName.length() > 0){
      model.addActivity (activityName);
      System.out.println ("Added activity");
      repaint ();}
    }
    else if (a.equals ("Print"))
    {
-     
+     try
+     {
+     table.print ();
+     }
+     catch (PrinterException e)
+     {
+     }
    }
    else if (a.equals ("Change date"))
    {
