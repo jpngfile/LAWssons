@@ -15,15 +15,17 @@ public class NewTableModel extends AbstractTableModel
 //   };
   //Will have to reorganize the data to a different form later
   //will have to convert to take data from lawgbook rather than from itself
-  ArrayList<ArrayList<Object>> data = new ArrayList<ArrayList<Object>>();
+  //ArrayList<ArrayList<Object>> data = new ArrayList<ArrayList<Object>>();
    int rowCount;
    int colCount;
+  Lawgbook lawgbook = new Lawgbook ();
   public NewTableModel ()
   {
     rowCount = 0;
     colCount = 0;
     addColumn ("Activity");
     addColumn ("Amount completed");
+    addColumn ("Rank");
     addColumn ("Student 1");
     addColumn ("Student 2");
     addActivity ("Swimming");
@@ -49,67 +51,92 @@ public class NewTableModel extends AbstractTableModel
   
   public Object getValueAt (int row, int col)
   {
-    return data.get(col).get(row);
+    try{
+    switch (col)
+    {
+      case 0 : return lawgbook.getActivity (row).getName();
+      case 1 : return lawgbook.getActivity (row).getCompleted();
+      case 2 : return lawgbook.getRank (lawgbook.getActivity (row));
+      default : return lawgbook.getStudent (col - 3).getRank(lawgbook.getActivity (row));
+    }
+    }
+    catch (NullPointerException e)
+    {
+     return "Null"; 
+    }
   }
   
   public void addActivity (String name)
   {
-    data.get(0).add (name);
+    lawgbook.addActivity (name);///This should remember to add that activity to every student
     rowCount++;
-    for (int x = 1; x < data.size();x++)
-    {
-      data.get(x).add ("0");
-    }
   }
   
   public void addColumn (String name)
   {
    colNames.add (name);
    colCount++;
-   ArrayList<Object> list = new ArrayList<Object>();
-    for (int x =0; x < getRowCount();x++)
-    {
-      list.add (new Integer (0));
-    }
-   data.add (list);
-   //System.out.println ("Data size: " + data.size() + " Column count: " + getColumnCount());
+   if (colCount > 3)
+   {
+     lawgbook.addStudent (name);//This should take care of everything necessary, like filling the ranking arrayList
+   }
   }
   
   //Note: first column, then row
   public void setValueAt (Object obj,int rowIndex, int columnIndex)
   {
+    String s = obj.toString ();
     if (columnIndex > 0)
-    {
-      String s = obj.toString ();
+    {      
       if (!isNumeric (s)){
         return;
       }
     }
-    data.get(columnIndex).remove (rowIndex);
-    data.get(columnIndex).add (rowIndex, obj);
+    switch (columnIndex)
+    {
+      case 0 : lawgbook.getActivity (rowIndex).setName (s);
+        break;
+      case 1 : lawgbook.getActivity (rowIndex).setCompleted (Integer.parseInt (s));
+        break;
+      case 2: //nothing. This isn't even editable
+        break;
+      default : lawgbook.getStudent (columnIndex - 3).setRanking (lawgbook.getActivity (rowIndex),Integer.parseInt (s));
+    }
+  }
+  
+  public boolean removeStudent (String name)
+  {
+    if (lawgbook.removeStudent(name)){
+      colCount--;
+      colNames.remove (name);
+      return true;
+      //System.out.println ("Name: " + colNames.get(colCount - 1));
+    }
+    return false;
+  }
+  
+  public void removeActivity (String name)
+  {
+    if (lawgbook.removeActivity (name)){
+      System.out.println ("success");
+      rowCount--;
+    }
   }
   public boolean isCellEditable (int rowIndex, int columnIndex)
   {
+    if (columnIndex != 2)
     return true;
+    return false;
   }
   
+  public Lawgbook getLawgbook ()
+  {
+    return lawgbook;
+  }
   //Assuming there is not more than one student of a given name
   public ArrayList<Integer> getStudentInfo (String student)
   {
-    ArrayList<Integer> list = new ArrayList<Integer>();
-    int index = 0;
-    for (int x = 2;x < colNames.size();x++){
-      if (colNames.get(x).equals (student)){
-        index = x;
-        break;
-      }
-    }
-    ArrayList<Object> studentData = data.get(index);
-    for (Object j : studentData)
-    {
-      list.add (new Integer (integerOf (j)));
-    }
-    return list;
+    return null;
   }
   
   public Integer integerOf (Object j)

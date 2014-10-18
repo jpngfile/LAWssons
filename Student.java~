@@ -59,12 +59,10 @@ public class Student
   {
     return setRanking (activity.getName(),rank);
   }
-  
   public boolean addRanking (Activity activity, int rank)
   {
     return addRanking (activity.getName(),rank);
   }
-  
   public boolean addRanking (String activity, int rank)
   {
     if (getRanking (activity) != null){

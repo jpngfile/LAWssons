@@ -14,8 +14,9 @@ public class Lawgbook
   String title;
   String formatDate;
   JFileChooser fileChooser;
+  int dynamicDiff = 0; //Since JTable assumes the use of arrays for data storage, the arrayList must be compensated for
   //should probably use polimorphism instead
-  NewTableModel model = new NewTableModel();
+  //NewTableModel model = new NewTableModel();
  public Lawgbook()
  {
    date = new Date (System.currentTimeMillis());
@@ -33,6 +34,86 @@ public class Lawgbook
   return list;
  }
  
+ public void setDynamicDiff (int newDiff)
+ {
+  dynamicDiff = newDiff; 
+ }
+ public Activity getActivity (int index)
+ {
+   try{
+   return activities.get (index);
+   }
+   catch (IndexOutOfBoundsException e){
+     return null;
+   }
+ }
+ 
+ public Student getStudent (int index)
+ {
+   //index += dynamicDiff;
+   try
+   {
+   return students.get(index);
+   }
+   catch (IndexOutOfBoundsException e){
+     System.out.println ("index error: " + index);
+     return null;
+   }
+ }
+ 
+ public void addStudent (String name)
+ {
+   Student s = new Student (name);
+//   if (dynamicDiff < 0)
+//     dynamicDiff++;
+   for (Activity a : activities)
+   {
+    s.addRanking (a,0); 
+   }
+   students.add (s);
+ }
+ 
+ public void addActivity (String name)
+ {
+   Activity a = new Activity (name);
+   activities.add (a);
+   for (Student s : students)
+   {
+    s.addRanking (a,0); 
+   }
+ }
+ 
+ //returns if removal was successful
+ public boolean removeActivity (String name)
+ {
+   for (Activity a : activities)
+   {
+     if (a.getName().equals (name)){
+       for (Student s : students){
+         s.removeRanking (a);
+       }
+       activities.remove (a);
+       return true;
+     }
+   }
+   return false;
+ }
+ 
+ public boolean removeStudent (String name)
+ {
+   for (int x = 0; x < students.size();x++)
+   {
+     Student s = students.get(x);
+    if (s.getName().equals (name))
+    {
+//      if (x != students.size() - 1)
+//        dynamicDiff--;
+     students.remove (s);
+     return true;
+    }
+   }
+   return false;
+ }
  public int getRank (Activity a)
  {
   return 0; 
