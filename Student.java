@@ -104,9 +104,16 @@ public class Student
     }
     return null;
   }
+
+  public String getActivity (int index)
+  {
+   return ranks.get(index).getActivity(); 
+  }
   
-  
-  
+  public int getNumRanks ()
+  {
+    return ranks.size();
+  }
   //Private class to only be edited by Student
   private class Ranking
   {

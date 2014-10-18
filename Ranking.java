@@ -1,3 +1,10 @@
+/**
+ * Data class for a students rank in an activity.
+ * This is just an <code>Activity</code> and an <code>int</code>.
+ * 
+ * @author Jason P'ng
+ * @version 1.6 October 17th, 2014
+ */
 public class Ranking
 {
  String activity;

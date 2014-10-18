@@ -49,6 +49,15 @@ public class NewTableModel extends AbstractTableModel
     return colCount;
   }
   
+  public void setColumnCount (int num)
+  {
+   colCount = num; 
+  }
+  
+  public void setRowCount (int num)
+  {
+    rowCount = num;
+  }
   public Object getValueAt (int row, int col)
   {
     try{
@@ -82,6 +91,12 @@ public class NewTableModel extends AbstractTableModel
    }
   }
   
+  public void addColumn (String name,boolean state)
+  {
+    colNames.add (name);
+   colCount++;
+  }
+  
   //Note: first column, then row
   public void setValueAt (Object obj,int rowIndex, int columnIndex)
   {
@@ -113,6 +128,13 @@ public class NewTableModel extends AbstractTableModel
       //System.out.println ("Name: " + colNames.get(colCount - 1));
     }
     return false;
+  }
+  
+  public String removeColumn (String name)
+  {
+    colCount--;
+    colNames.remove (name);
+    return name;
   }
   
   public void removeActivity (String name)
