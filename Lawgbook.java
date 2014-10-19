@@ -42,6 +42,7 @@ public class Lawgbook
   {
     title = newTitle;
   }
+  
   public ArrayList<Activity> createLessonList (int amount)
   {
     ArrayList<Activity> list = new ArrayList<Activity>();
@@ -80,6 +81,10 @@ public class Lawgbook
     students.add (s);
   }
   
+  public void addStudent (Student s)
+  {
+   students.add (s); 
+  }
   public void addActivity (String name)
   {
     Activity a = new Activity (name);
@@ -89,6 +94,7 @@ public class Lawgbook
       s.addRanking (a,0); 
     }
   }
+  
   public void addActivity (String name,int completed)
   {
     Activity a = new Activity (name,completed);

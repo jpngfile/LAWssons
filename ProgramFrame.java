@@ -89,15 +89,11 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
     else if (a.equals ("Save"))
     {
-      if (display.getLawgbook().getFile() == null){
-        saveAs();
-      }
-      else{
-        save(display.getLawgbook().getFile());
-      }
+      saveFile();
     }
     else if (a.equals ("SaveAs"))
     {
+      saveAs();
     }
     else if (a.equals ("Open"))
     {
@@ -112,7 +108,7 @@ public class ProgramFrame extends JFrame implements ActionListener
   }
   
   //make sure l is a reference and not value
-  public void save (File file)
+  public boolean save (File file)
   {
     try
     {
@@ -147,130 +143,168 @@ public class ProgramFrame extends JFrame implements ActionListener
       //Do necessary checks here
       l.setSaved (true);
       l.setFile (file);
+      return true;
     }
     catch (IOException e){
+      return false;
     }
   }
   
-  public void saveAs ()
+  public boolean saveAs ()
   {
     File file;
     fileChooser.showSaveDialog (this);
     file = fileChooser.getSelectedFile();   
     //format the file
-    File newFile = new File (file.getParent(),Lawgbook.formatFileName (file));
-    //check for overwriting
-    int choice = JOptionPane.YES_OPTION;
-    if (newFile.exists()){
-      choice = JOptionPane.showConfirmDialog (this,"There is another file of the same name. Do you wish to overwrite?","Overwrite?",JOptionPane.YES_NO_OPTION);
+    if (file != null){
+      File newFile = new File (file.getParent(),Lawgbook.formatFileName (file));
+      //check for overwriting
+      int choice = JOptionPane.YES_OPTION;
+      if (newFile.exists()){
+        choice = JOptionPane.showConfirmDialog (this,"There is another file of the same name. Do you wish to overwrite?","Overwrite?",JOptionPane.YES_NO_OPTION);
+      }
+      if (choice == JOptionPane.YES_OPTION){
+        return save (newFile);
+      }
     }
-    if (choice == JOptionPane.YES_OPTION){
-      save (newFile);
-    }
+    return false;
   }
   
   public void open ()
   {
     //Check for saving the current file
-    checkSaved ();
-    Lawgbook l = display.getLawgbook ();
-    File file;
-    fileChooser.showOpenDialog(this); //I need to access a component for this to work. May have to move location of IO Methods
-    file = fileChooser.getSelectedFile();
-    try{
-      BufferedReader in = new BufferedReader (new FileReader (file));
-      l.clearData();//could put this at the end to make sure all data is read in properly first
-      //read in all the info
-      in.readLine ();//The header
-      int numActivities = Integer.parseInt (in.readLine());
-      for (int x = 0;x < numActivities;x++){
-        String name = in.readLine ();
-        int completed = Integer.parseInt (in.readLine ());
-        l.addActivity (name,completed);
-      }
-      int numStudents = Integer.parseInt (in.readLine ());
-      for (int x = 0;x < numStudents;x++){
-        String name = in.readLine ();
-        l.addStudent (name);
-        Student s = l.getStudent (x);
-        for (int y = 0;y < numActivities;y++){
-          String aName = in.readLine ();
-          int rank = Integer.parseInt (in.readLine ());
-          s.setRanking (aName,rank);
+    if (checkSaved ()){
+      Lawgbook l = display.getLawgbook ();
+      File file;
+      fileChooser.showOpenDialog(this); //I need to access a component for this to work. May have to move location of IO Methods
+      file = fileChooser.getSelectedFile();
+      if (file != null){
+        //Create temporary arrayLists in case something goes wrong
+        ArrayList<Activity> a = new ArrayList<Activity>();
+        a.addAll (l.getActivities());
+        ArrayList<Student> st = new ArrayList<Student>();
+        st.addAll (l.getStudents());
+        ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+        lessons.addAll (l.getLessons());
+        try{
+          BufferedReader in = new BufferedReader (new FileReader (file));        
+          l.clearData();
+          //read in all the info
+          in.readLine ();//The header
+          int numActivities = Integer.parseInt (in.readLine());
+          for (int x = 0;x < numActivities;x++){
+            String name = in.readLine ();
+            int completed = Integer.parseInt (in.readLine ());
+            l.addActivity (name,completed);
+          }
+          int numStudents = Integer.parseInt (in.readLine ());
+          for (int x = 0;x < numStudents;x++){
+            String name = in.readLine ();
+            l.addStudent (name);
+            Student s = l.getStudent (x);
+            for (int y = 0;y < numActivities;y++){
+              String aName = in.readLine ();
+              int rank = Integer.parseInt (in.readLine ());
+              s.setRanking (aName,rank);
+            }
+          }
+          int numLessons = Integer.parseInt (in.readLine ());
+          for (int x = 0;x < numLessons;x++){
+            long time = Long.parseLong(in.readLine ());
+            Date newDate = new Date (time);
+            int listLength = Integer.parseInt (in.readLine ());
+            ArrayList<Activity> list = new ArrayList<Activity>();
+            for (int y = 0;y < listLength;y++){
+              list.add (new Activity (in.readLine ()));
+            }
+            l.addLesson (new Lesson (newDate,list));
+          }
+          in.readLine ();//footer
+          in.close(); 
+          //Do all checks to make sure the data is all good
+          //necessary status changes
+          l.setSaved (true);
+          l.setFile (file);
+          //Display the info
+        }
+        catch (IOException e)
+        {
+          JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NumberFormatException n)
+        {
+          l.clearData();
+          l.getActivities().addAll(a);
+          l.getStudents().addAll (st);
+          l.getLessons().addAll (lessons);
+          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NullPointerException p)
+        {
+          l.clearData();
+          l.getActivities().addAll (a);
+          l.getStudents().addAll (st);
+          l.getLessons().addAll (lessons);
+          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
       }
-      int numLessons = Integer.parseInt (in.readLine ());
-      for (int x = 0;x < numLessons;x++){
-        long time = Long.parseLong(in.readLine ());
-        Date newDate = new Date (time);
-        int listLength = Integer.parseInt (in.readLine ());
-        ArrayList<Activity> list = new ArrayList<Activity>();
-        for (int y = 0;y < listLength;y++){
-          list.add (new Activity (in.readLine ()));
-        }
-        l.addLesson (new Lesson (newDate,list));
-      }
-      in.readLine ();//footer
-      in.close(); 
-      //Do all checks to make sure the data is all good
-      //necessary status changes
-      l.setSaved (true);
-      l.setFile (file);
-      //Display the info
     }
-    catch (IOException e)
-    {
-      JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
-    }
-    catch (NumberFormatException n)
-    {
-      JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
-    }
-    catch (NullPointerException p)
-    {
-      JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
-    }
-    
   }
   
   public void newFile ()
   {
     //Check for saving the current file
-    checkSaved ();
-    //Open input dialog
-    ClassInputPanel inputPanel = new ClassInputPanel ();
-    int choice = JOptionPane.showConfirmDialog (this,inputPanel,"New Class Input",JOptionPane.OK_CANCEL_OPTION);
-    if (choice == JOptionPane.OK_OPTION){
-      try
-      {
-        String name = inputPanel.nameField.getText();
-        int weekNum = Integer.parseInt (inputPanel.weekField.getText());
-        int activityMin = Integer.parseInt (inputPanel.activityField.getText());
-        Lawgbook l = display.getLawgbook ();
-        l.setTitle (name);
-        l.setWeeksPassed (0);
-        l.setActivityMin (activityMin);
-        l.clearData();
-        display.refreshData();         
+    if (checkSaved ()){
+      //Open input dialog
+      ClassInputPanel inputPanel = new ClassInputPanel ();
+      int choice = JOptionPane.showConfirmDialog (this,inputPanel,"New Class Input",JOptionPane.OK_CANCEL_OPTION);
+      if (choice == JOptionPane.OK_OPTION){
+        try
+        {
+          String name = inputPanel.nameField.getText();
+          int weekNum = Integer.parseInt (inputPanel.weekField.getText());
+          int activityMin = Integer.parseInt (inputPanel.activityField.getText());
+          Lawgbook l = display.getLawgbook ();
+          l.setTitle (name);
+          l.setWeeksPassed (0);
+          l.setActivityMin (activityMin);
+          l.clearData();
+          display.refreshData();         
+        }
+        catch (NumberFormatException e){
+          JOptionPane.showMessageDialog (this,"Input is not acceptable.","Input error",JOptionPane.ERROR_MESSAGE);
+        }
       }
-      catch (NumberFormatException e){
-        JOptionPane.showMessageDialog (this,"Input is not acceptable.","Input error",JOptionPane.ERROR_MESSAGE);
-      }
+      //If input is good, clear the current file
+      //make all necessary status changes
     }
-    //If input is good, clear the current file
-    //make all necessary status changes
   } 
   
-  public void checkSaved ()
+  public boolean saveFile ()
+  {
+    if (display.getLawgbook().getFile() == null){
+      return saveAs();
+    }
+    else{
+      return save(display.getLawgbook().getFile());
+    }
+  }
+  
+  public boolean checkSaved ()
   {
     if (!display.getLawgbook().isSaved()){
       int choice = JOptionPane.NO_OPTION;
-      choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_OPTION);
+      choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_CANCEL_OPTION);
       if (choice == JOptionPane.YES_OPTION){
-        actionPerformed (new ActionEvent (this,0,"Save"));
+        return saveFile();
       }
-    } 
+      else if (choice == JOptionPane.CANCEL_OPTION){
+        return false;
+      }
+    }
+    return true;
   }
+  
   class KListen extends KeyAdapter
   {
     public void keyPressed (KeyEvent k)
