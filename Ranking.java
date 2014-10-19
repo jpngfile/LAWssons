@@ -1,7 +1,7 @@
 /**
  * Data class for a students rank in an activity.
  * This is just an <code>Activity</code> and an <code>int</code>.
- * 
+ * Obsolete as of 1.7
  * @author Jason P'ng
  * @version 1.6 October 17th, 2014
  */

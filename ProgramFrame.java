@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 /**
  * The primary JFrame for containing the program.
  * FileIO is executed from here.
+ * For FileIO, will have to error trap for failed operations so that data isn't cleared prematurely
  * 
  * @author Jason P'ng
  * @version  1.6 October 17th, 2014
@@ -28,79 +31,88 @@ import java.util.ArrayList;
 public class ProgramFrame extends JFrame implements ActionListener
 {
   DisplayPanel display;
-    JFileChooser fileChooser;
- public ProgramFrame ()
- {
-   super ("Lawssons");
-   //add (new IntroPanel ());
-   display = new DisplayPanel ();
-   getContentPane().add (display);
-   JMenuItem newItem = new JMenuItem ("New");
-   JMenuItem openItem = new JMenuItem ("Open");
-   JMenuItem saveItem = new JMenuItem ("Save");
-   JMenuItem saveAsItem = new JMenuItem ("SaveAs");
-   JMenuItem quitItem = new JMenuItem ("Quit");
-   
-   JMenu file = new JMenu ("File");
-   file.add (newItem);
-   file.add (openItem);
-   file.add (saveItem);
-   file.add (saveAsItem);
-   file.add (quitItem);
-   
-   JMenuBar fileMenu = new JMenuBar ();
-   fileMenu.add (file);
-   setJMenuBar (fileMenu);
-   
-   newItem.addActionListener (this);
-   openItem.addActionListener (this);
-   saveItem.addActionListener (this);
-   saveAsItem.addActionListener (this);
-   quitItem.addActionListener (this);
-  //setLocation (0,0);
-  
-  addKeyListener (new KListen ());
-  setVisible (true);
-  setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
-  setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-  
-  fileChooser = new JFileChooser();
+  JFileChooser fileChooser;
+  public ProgramFrame ()
+  {
+    super ("Lawssons");
+    //add (new IntroPanel ());
+    display = new DisplayPanel ();
+    getContentPane().add (display);
+    JMenuItem newItem = new JMenuItem ("New");
+    JMenuItem openItem = new JMenuItem ("Open");
+    JMenuItem saveItem = new JMenuItem ("Save");
+    JMenuItem saveAsItem = new JMenuItem ("SaveAs");
+    JMenuItem quitItem = new JMenuItem ("Quit");
+    
+    JMenu file = new JMenu ("File");
+    file.add (newItem);
+    file.add (openItem);
+    file.add (saveItem);
+    file.add (saveAsItem);
+    file.add (quitItem);
+    
+    JMenuBar fileMenu = new JMenuBar ();
+    fileMenu.add (file);
+    setJMenuBar (fileMenu);
+    
+    newItem.addActionListener (this);
+    openItem.addActionListener (this);
+    saveItem.addActionListener (this);
+    saveAsItem.addActionListener (this);
+    quitItem.addActionListener (this);
+    //setLocation (0,0);
+    addWindowListener (new WindowAdapter ()
+                         {
+      public void windowClosing (WindowEvent event)
+      {
+        checkSaved();
+        System.exit (0);
+      }
+    });
+    addKeyListener (new KListen ());
+    setVisible (true);
+    setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
+    setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+    
+    fileChooser = new JFileChooser();
     FileNameExtensionFilter filter = new FileNameExtensionFilter ("Lawg files","lawg");
     fileChooser.setFileFilter (filter);
     fileChooser.addChoosableFileFilter (filter);//necessary?
- }
- 
- public void actionPerformed (ActionEvent ae)
- {
-  String a = ae.getActionCommand ();
-  if (a.equals ("New"))
-  {
   }
-  else if (a.equals ("Save"))
+  
+  public void actionPerformed (ActionEvent ae)
   {
-    if (display.getLawgbook().getFile() == null){
-      saveAs();
+    String a = ae.getActionCommand ();
+    if (a.equals ("New"))
+    {
+      newFile();
     }
-    else{
-      save(display.getLawgbook().getFile());
+    else if (a.equals ("Save"))
+    {
+      if (display.getLawgbook().getFile() == null){
+        saveAs();
+      }
+      else{
+        save(display.getLawgbook().getFile());
+      }
+    }
+    else if (a.equals ("SaveAs"))
+    {
+    }
+    else if (a.equals ("Open"))
+    {
+      open ();
+      display.refreshData();
+    }
+    else if (a.equals ("Quit"))
+    {
+      checkSaved ();
+      System.exit (0);
     }
   }
-  else if (a.equals ("SaveAs"))
-  {
-  }
-  else if (a.equals ("Open"))
-  {
-    open ();
-    display.refreshData();
-  }
-  else if (a.equals ("Quit"))
-  {
-    System.exit (0);
-  }
- }
- 
- //make sure l is a reference and not value
- public void save (File file)
+  
+  //make sure l is a reference and not value
+  public void save (File file)
   {
     try
     {
@@ -153,21 +165,15 @@ public class ProgramFrame extends JFrame implements ActionListener
       choice = JOptionPane.showConfirmDialog (this,"There is another file of the same name. Do you wish to overwrite?","Overwrite?",JOptionPane.YES_NO_OPTION);
     }
     if (choice == JOptionPane.YES_OPTION){
-    save (newFile);
+      save (newFile);
     }
   }
   
   public void open ()
   {
     //Check for saving the current file
+    checkSaved ();
     Lawgbook l = display.getLawgbook ();
-    if (!l.isSaved()){
-      int choice = JOptionPane.NO_OPTION;
-      choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_OPTION);
-      if (choice == JOptionPane.YES_OPTION){
-        actionPerformed (new ActionEvent (this,0,"Save"));
-      }
-    }
     File file;
     fileChooser.showOpenDialog(this); //I need to access a component for this to work. May have to move location of IO Methods
     file = fileChooser.getSelectedFile();
@@ -188,9 +194,9 @@ public class ProgramFrame extends JFrame implements ActionListener
         l.addStudent (name);
         Student s = l.getStudent (x);
         for (int y = 0;y < numActivities;y++){
-        String aName = in.readLine ();
-        int rank = Integer.parseInt (in.readLine ());
-        s.setRanking (aName,rank);
+          String aName = in.readLine ();
+          int rank = Integer.parseInt (in.readLine ());
+          s.setRanking (aName,rank);
         }
       }
       int numLessons = Integer.parseInt (in.readLine ());
@@ -224,21 +230,52 @@ public class ProgramFrame extends JFrame implements ActionListener
     {
       JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
     }
-
+    
   }
   
   public void newFile ()
   {
     //Check for saving the current file
+    checkSaved ();
     //Open input dialog
+    ClassInputPanel inputPanel = new ClassInputPanel ();
+    int choice = JOptionPane.showConfirmDialog (this,inputPanel,"New Class Input",JOptionPane.OK_CANCEL_OPTION);
+    if (choice == JOptionPane.OK_OPTION){
+      try
+      {
+        String name = inputPanel.nameField.getText();
+        int weekNum = Integer.parseInt (inputPanel.weekField.getText());
+        int activityMin = Integer.parseInt (inputPanel.activityField.getText());
+        Lawgbook l = display.getLawgbook ();
+        l.setTitle (name);
+        l.setWeeksPassed (0);
+        l.setActivityMin (activityMin);
+        l.clearData();
+        display.refreshData();         
+      }
+      catch (NumberFormatException e){
+        JOptionPane.showMessageDialog (this,"Input is not acceptable.","Input error",JOptionPane.ERROR_MESSAGE);
+      }
+    }
     //If input is good, clear the current file
     //make all necessary status changes
   } 
- class KListen extends KeyAdapter
- {
-  public void keyPressed (KeyEvent k)
+  
+  public void checkSaved ()
   {
-    int a = k.getKeyCode();
+    if (!display.getLawgbook().isSaved()){
+      int choice = JOptionPane.NO_OPTION;
+      choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_OPTION);
+      if (choice == JOptionPane.YES_OPTION){
+        actionPerformed (new ActionEvent (this,0,"Save"));
+      }
+    } 
   }
- }
+  class KListen extends KeyAdapter
+  {
+    public void keyPressed (KeyEvent k)
+    {
+      int a = k.getKeyCode();
+    }
+  }
 }

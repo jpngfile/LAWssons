@@ -4,6 +4,8 @@ import java.util.*;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.text.DateFormat;
+
+//Will have to implement the date, and the amount of weeks
 public class Lawgbook
 {
   ArrayList<Student> students = new ArrayList<Student>();
@@ -12,7 +14,9 @@ public class Lawgbook
   Date date;
   String title;
   String formatDate;
-
+  int totalWeeks;
+  int weeksPassed;
+  int activityMin;
   File fileName;
   boolean saved;
   public Lawgbook()
@@ -192,6 +196,26 @@ public class Lawgbook
   public ArrayList<Lesson> getLessons ()
   {
     return lessons;
+  }
+  
+  public void setActivityMin (int num)
+  {
+   activityMin = num; 
+  }
+  
+  public int getActivityMin ()
+  {
+    return activityMin;
+  }
+  
+  public void setWeeksPassed (int num)
+  {
+    weeksPassed = num;
+  }
+  
+  public int getWeeksPassed ()
+  {
+    return weeksPassed;
   }
   public static String formatFileName (File file)
   {

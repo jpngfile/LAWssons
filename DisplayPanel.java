@@ -13,6 +13,7 @@ public class DisplayPanel extends JPanel implements ActionListener
 {
   NewTableModel model;
   JTable table;
+  JLabel titleLabel;
   public DisplayPanel ()
   {
     //tables start at index 1,1
@@ -21,7 +22,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     //This will be taken from Lawgbook and formated with a string formatter. Will have to update later
     JLabel dateLabel = new JLabel (model.getLawgbook().getFormatDate());
      //This is later determined by the lawgbook this is connected to
-    JLabel titleLabel = new JLabel (model.getLawgbook().getTitle());
+    titleLabel = new JLabel (model.getLawgbook().getTitle());
     //Is this needed?
     JScrollPane scrollpane = new JScrollPane (table);
     table.setFillsViewportHeight (true);
@@ -189,6 +190,7 @@ public class DisplayPanel extends JPanel implements ActionListener
       table.removeColumn (table.getColumn (name));
     }
     model.setRowCount (getLawgbook().getNumActivities());
+    titleLabel.setText (getLawgbook().getTitle());
     table.updateUI ();
   }
 }
