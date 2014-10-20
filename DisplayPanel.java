@@ -33,7 +33,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     JButton removeStudentButton = new JButton ("Remove Student");
     JButton removeActivityButton = new JButton ("Remove Activity");
     JButton printButton = new JButton ("Print");
-    JButton changeDateButton = new JButton ("Change date");
+    //JButton changeDateButton = new JButton ("Change date");
     JButton makeLessonButton = new JButton ("Make lesson");
     JButton seeLessonButton = new JButton ("See lessons");
     JButton updateButton = new JButton ("Update");
@@ -43,7 +43,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     removeStudentButton.addActionListener (this);
     removeActivityButton.addActionListener (this);
     printButton.addActionListener (this);
-    changeDateButton.addActionListener (this);
+    //changeDateButton.addActionListener (this);
     makeLessonButton.addActionListener (this);
     seeLessonButton.addActionListener (this);
     updateButton.addActionListener (this);
@@ -62,7 +62,7 @@ public class DisplayPanel extends JPanel implements ActionListener
                                               .addComponent (removeStudentButton)
                                               .addComponent (removeActivityButton)
                                               
-                                              .addComponent (changeDateButton)
+                                              //.addComponent (changeDateButton)
                                               .addComponent (makeLessonButton)
                                               .addComponent (seeLessonButton)
                                               .addComponent (printButton))
@@ -79,7 +79,7 @@ public class DisplayPanel extends JPanel implements ActionListener
                                             .addComponent (removeStudentButton)
                                             .addComponent (removeActivityButton)
                                             
-                                            .addComponent (changeDateButton)
+                                            //.addComponent (changeDateButton)
                                             .addComponent (makeLessonButton)
                                             .addComponent (seeLessonButton)
                                             .addComponent (printButton))
@@ -87,6 +87,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     setLayout (layout);
     //add (scrollpane);
     setVisible (true);
+    
   }
   
   public void actionPerformed (ActionEvent ae)
@@ -97,9 +98,9 @@ public class DisplayPanel extends JPanel implements ActionListener
       //What does this return if the textfield is empty?
       String studentName = JOptionPane.showInputDialog (this, "Enter the name of the student.");
       if (studentName != null && studentName.length() > 0){
-        System.out.println (studentName);
+        //System.out.println (studentName);
         model.addColumn (studentName);
-        System.out.println ("Added student");
+        //System.out.println ("Added student");
         table.addColumn (new TableColumn(model.getColumnCount() - 1));
         repaint ();
       }
@@ -109,7 +110,7 @@ public class DisplayPanel extends JPanel implements ActionListener
       String activityName = JOptionPane.showInputDialog (this, "Enter the name of the activity.");
       if (activityName != null && activityName.length() > 0){
         model.addActivity (activityName);
-        System.out.println ("Added activity");
+        //System.out.println ("Added activity");
         repaint ();}
     }
     else if (a.equals ("Remove Student"))
@@ -133,7 +134,7 @@ public class DisplayPanel extends JPanel implements ActionListener
       String activityName = JOptionPane.showInputDialog (this, "Enter the name of the activity.");
       if (activityName != null && activityName.length() > 0){
         model.removeActivity (activityName);
-        System.out.println ("removed activity : " + activityName);
+        //System.out.println ("removed activity : " + activityName);
         repaint ();} 
     }
     else if (a.equals ("Print"))
@@ -146,9 +147,9 @@ public class DisplayPanel extends JPanel implements ActionListener
       {
       }
     }
-    else if (a.equals ("Change date"))
-    {
-    }
+//    else if (a.equals ("Change date"))
+//    {
+//    }
     else if (a.equals ("Make lesson"))
     {      
     }
@@ -170,7 +171,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     for (int x = 0;x < model.getColumnCount();x++)
     {
       table.getTableHeader().getColumnModel().getColumn(x).setHeaderValue (model.getColumnName(x));
-      System.out.println ("Index " + x + ": " + table.getTableHeader().getColumnModel().getColumn(x).getHeaderValue ());
+      //System.out.println ("Index " + x + ": " + table.getTableHeader().getColumnModel().getColumn(x).getHeaderValue ());
     }
   }
   

@@ -24,8 +24,6 @@ public class Lawgbook
     date = new Date (System.currentTimeMillis());
     DateFormat format = new SimpleDateFormat ("EEE, d MMM yyyy");
     formatDate = format.format (date);
-    
-    title = "Law's Swimming Class";
   }
   
   public String getFormatDate ()
@@ -140,9 +138,11 @@ public class Lawgbook
     }
     return false;
   }
+  
   public int getRank (Activity a)
   {
-    return 0; 
+    //Implement this method to determine the priority of an activity
+    return 0;
   }
   
   public void printLesson (Lesson l)
@@ -222,6 +222,16 @@ public class Lawgbook
   public int getWeeksPassed ()
   {
     return weeksPassed;
+  }
+  
+  public void setTotalWeeks (int num)
+  {
+    totalWeeks = num;
+  }
+  
+  public int getTotalWeeks ()
+  {
+    return totalWeeks;
   }
   public static String formatFileName (File file)
   {

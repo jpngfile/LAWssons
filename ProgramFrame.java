@@ -6,6 +6,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
@@ -31,19 +32,28 @@ import java.util.ArrayList;
 public class ProgramFrame extends JFrame implements ActionListener
 {
   DisplayPanel display;
+  JPanel mainPanel;
   JFileChooser fileChooser;
   public ProgramFrame ()
   {
     super ("Lawssons");
     //add (new IntroPanel ());
+    mainPanel = new JPanel (new CardLayout());
+    
     display = new DisplayPanel ();
-    getContentPane().add (display);
+    setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
+    mainPanel.setSize (this.getSize());    
+    mainPanel.add ("intro",new IntroPanel());
+    mainPanel.add ("display",display);
+    getContentPane().add(mainPanel);
     JMenuItem newItem = new JMenuItem ("New");
     JMenuItem openItem = new JMenuItem ("Open");
     JMenuItem saveItem = new JMenuItem ("Save");
     JMenuItem saveAsItem = new JMenuItem ("SaveAs");
     JMenuItem quitItem = new JMenuItem ("Quit");
     
+//    saveItem.setEnabled (false);
+//    saveAsItem.setEnabled (false);
     JMenu file = new JMenu ("File");
     file.add (newItem);
     file.add (openItem);
@@ -70,8 +80,7 @@ public class ProgramFrame extends JFrame implements ActionListener
       }
     });
     addKeyListener (new KListen ());
-    setVisible (true);
-    setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
+    setVisible (true);    
     setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
     
     fileChooser = new JFileChooser();
@@ -86,19 +95,23 @@ public class ProgramFrame extends JFrame implements ActionListener
     if (a.equals ("New"))
     {
       newFile();
+      
     }
     else if (a.equals ("Save"))
     {
+      if (display.getLawgbook().getTitle() != null)
       saveFile();
     }
     else if (a.equals ("SaveAs"))
     {
+      if (display.getLawgbook().getTitle() != null)
       saveAs();
     }
     else if (a.equals ("Open"))
     {
       open ();
       display.refreshData();
+      
     }
     else if (a.equals ("Quit"))
     {
@@ -107,7 +120,14 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
   }
   
+  public void show (String panel)
+  {
+    CardLayout cl = (CardLayout)(mainPanel.getLayout());
+    cl.show (mainPanel,panel);
+    revalidate();
+  }
   //make sure l is a reference and not value
+  //should save weeks and weeks passed
   public boolean save (File file)
   {
     try
@@ -116,6 +136,10 @@ public class ProgramFrame extends JFrame implements ActionListener
       //write info here
       Lawgbook l = display.getLawgbook();
       out.println ("Lawssons File: to be read by the Lawssons program");
+      out.println (l.getTitle());
+      out.println (l.getTotalWeeks());
+      out.println (l.getWeeksPassed());
+      out.println (l.getActivityMin());
       out.println (l.getNumActivities());
       for (Activity a : l.getActivities()){
         out.println (a.getName());
@@ -170,6 +194,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     return false;
   }
   
+  //should read in amount of weeks and weeks passed now
   public void open ()
   {
     //Check for saving the current file
@@ -186,11 +211,17 @@ public class ProgramFrame extends JFrame implements ActionListener
         st.addAll (l.getStudents());
         ArrayList<Lesson> lessons = new ArrayList<Lesson>();
         lessons.addAll (l.getLessons());
+        String oldTitle = l.getTitle();
+        int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin()};
         try{
           BufferedReader in = new BufferedReader (new FileReader (file));        
           l.clearData();
           //read in all the info
           in.readLine ();//The header
+          l.setTitle (in.readLine ());
+          l.setTotalWeeks (Integer.parseInt (in.readLine ()));
+          l.setWeeksPassed (Integer.parseInt (in.readLine ()));
+          l.setActivityMin (Integer.parseInt (in.readLine ()));
           int numActivities = Integer.parseInt (in.readLine());
           for (int x = 0;x < numActivities;x++){
             String name = in.readLine ();
@@ -226,6 +257,7 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.setSaved (true);
           l.setFile (file);
           //Display the info
+          show ("display");
         }
         catch (IOException e)
         {
@@ -237,6 +269,10 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.getActivities().addAll(a);
           l.getStudents().addAll (st);
           l.getLessons().addAll (lessons);
+          l.setTitle (oldTitle);
+          l.setTotalWeeks (stats [0]);
+          l.setWeeksPassed (stats[1]);
+          l.setActivityMin (stats [2]);
           JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
         catch (NullPointerException p)
@@ -245,6 +281,10 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.getActivities().addAll (a);
           l.getStudents().addAll (st);
           l.getLessons().addAll (lessons);
+          l.setTitle (oldTitle);
+          l.setTotalWeeks (stats [0]);
+          l.setWeeksPassed (stats[1]);
+          l.setActivityMin (stats [2]);
           JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
       }
@@ -266,10 +306,12 @@ public class ProgramFrame extends JFrame implements ActionListener
           int activityMin = Integer.parseInt (inputPanel.activityField.getText());
           Lawgbook l = display.getLawgbook ();
           l.setTitle (name);
+          l.setTotalWeeks (weekNum);
           l.setWeeksPassed (0);
           l.setActivityMin (activityMin);
           l.clearData();
-          display.refreshData();         
+          display.refreshData();
+          show ("display");
         }
         catch (NumberFormatException e){
           JOptionPane.showMessageDialog (this,"Input is not acceptable.","Input error",JOptionPane.ERROR_MESSAGE);
@@ -292,7 +334,7 @@ public class ProgramFrame extends JFrame implements ActionListener
   
   public boolean checkSaved ()
   {
-    if (!display.getLawgbook().isSaved()){
+    if (!display.getLawgbook().isSaved() && display.getLawgbook().getFile() != null){
       int choice = JOptionPane.NO_OPTION;
       choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_CANCEL_OPTION);
       if (choice == JOptionPane.YES_OPTION){

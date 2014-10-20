@@ -12,7 +12,7 @@ public class IntroPanel extends JPanel
   BufferedImage img;
  public IntroPanel ()
  {
-   setPreferredSize (new Dimension (700,400));
+   setPreferredSize (new Dimension (500,500));
    setVisible (true);
    try
    {

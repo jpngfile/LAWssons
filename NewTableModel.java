@@ -7,15 +7,6 @@ public class NewTableModel extends AbstractTableModel
 {
   //String [] colNames = new String[]{"Activity", "Amount completed", "Student 1", "Student 2"};
   ArrayList<String> colNames = new ArrayList<String>();
-//   Object [][] data = new Object [][]
-//   {{"Swimming", new Integer (0), new Integer (3), new Integer (2)},
-//     {"Diving", new Integer (0), new Integer (1), new Integer (2)},
-//     {"Tredding", new Integer (0), new Integer (3), new Integer (3)},
-//     {"First-aid", new Integer (0), new Integer (3), new Integer (1)}
-//   };
-  //Will have to reorganize the data to a different form later
-  //will have to convert to take data from lawgbook rather than from itself
-  //ArrayList<ArrayList<Object>> data = new ArrayList<ArrayList<Object>>();
    int rowCount;
    int colCount;
   Lawgbook lawgbook = new Lawgbook ();
@@ -26,12 +17,6 @@ public class NewTableModel extends AbstractTableModel
     addColumn ("Activity");
     addColumn ("Amount completed");
     addColumn ("Rank");
-    addColumn ("Student 1");
-    addColumn ("Student 2");
-    addActivity ("Swimming");
-    addActivity ("Diving");
-    addActivity ("Tredding");
-    addActivity ("First-aid");
   }
   
   public String getColumnName (int index)
@@ -117,6 +102,7 @@ public class NewTableModel extends AbstractTableModel
         break;
       default : lawgbook.getStudent (columnIndex - 3).setRanking (lawgbook.getActivity (rowIndex),Integer.parseInt (s));
     }
+    lawgbook.setSaved (false);
   }
   
   public boolean removeStudent (String name)
@@ -140,7 +126,7 @@ public class NewTableModel extends AbstractTableModel
   public void removeActivity (String name)
   {
     if (lawgbook.removeActivity (name)){
-      System.out.println ("success");
+      //System.out.println ("success");
       rowCount--;
     }
   }
