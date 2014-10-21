@@ -309,6 +309,7 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.setTotalWeeks (weekNum);
           l.setWeeksPassed (0);
           l.setActivityMin (activityMin);
+          l.setSaved (true);
           l.clearData();
           display.refreshData();
           show ("display");
@@ -334,7 +335,8 @@ public class ProgramFrame extends JFrame implements ActionListener
   
   public boolean checkSaved ()
   {
-    if (!display.getLawgbook().isSaved() && display.getLawgbook().getFile() != null){
+    //This needs to be fixed for new files. Remove the second part
+    if (!display.getLawgbook().isSaved() && display.getLawgbook().getTitle() != null){
       int choice = JOptionPane.NO_OPTION;
       choice = JOptionPane.showConfirmDialog (this,"There is unsaved data. Would you like to save it?","Save data?",JOptionPane.YES_NO_CANCEL_OPTION);
       if (choice == JOptionPane.YES_OPTION){
