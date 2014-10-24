@@ -92,16 +92,21 @@ public class NewTableModel extends AbstractTableModel
         return;
       }
     }
+    lawgbook.rankActivities();
+    for (int x = 0;x < lawgbook.getNumActivities();x++){
+    fireTableCellUpdated (x,2);
+    }
     switch (columnIndex)
     {
       case 0 : lawgbook.getActivity (rowIndex).setName (s);
         break;
       case 1 : lawgbook.getActivity (rowIndex).setCompleted (Integer.parseInt (s));
         break;
-      case 2: //nothing. This isn't even editable
+      case 2: //This doesn't work
         break;
       default : lawgbook.getStudent (columnIndex - 3).setRanking (lawgbook.getActivity (rowIndex),Integer.parseInt (s));
     }
+    
     lawgbook.setSaved (false);
   }
   

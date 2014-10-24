@@ -42,7 +42,8 @@ public class ProgramFrame extends JFrame implements ActionListener
     
     display = new DisplayPanel ();
     setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
-    mainPanel.setSize (this.getSize());    
+    mainPanel.setSize (this.getSize());
+    //mainPanel.add ("lessons", new LessonPanel(this));
     mainPanel.add ("intro",new IntroPanel());
     mainPanel.add ("display",display);
     getContentPane().add(mainPanel);

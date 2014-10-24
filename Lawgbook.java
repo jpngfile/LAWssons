@@ -11,6 +11,7 @@ public class Lawgbook
   ArrayList<Student> students = new ArrayList<Student>();
   ArrayList<Activity> activities = new ArrayList<Activity>();
   ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+  ArrayList<Activity> sorted = new ArrayList<Activity>();
   Date date;
   String title;
   String formatDate;
@@ -81,7 +82,7 @@ public class Lawgbook
   
   public void addStudent (Student s)
   {
-   students.add (s); 
+    students.add (s); 
   }
   public void addActivity (String name)
   {
@@ -105,7 +106,7 @@ public class Lawgbook
   
   public void addLesson (Lesson l)
   {
-   lessons.add (l); 
+    lessons.add (l); 
   }
   //returns if removal was successful
   public boolean removeActivity (String name)
@@ -142,6 +143,10 @@ public class Lawgbook
   public int getRank (Activity a)
   {
     //Implement this method to determine the priority of an activity
+    if (!sorted.isEmpty()){
+      rankActivities();
+      return sorted.indexOf (a);
+    }
     return 0;
   }
   
@@ -206,7 +211,7 @@ public class Lawgbook
   
   public void setActivityMin (int num)
   {
-   activityMin = num; 
+    activityMin = num; 
   }
   
   public int getActivityMin ()
@@ -233,6 +238,46 @@ public class Lawgbook
   {
     return totalWeeks;
   }
+  
+  public void rankActivities ()
+  {
+      sorted.clear();
+      sorted.addAll (activities);
+      Collections.sort (sorted, new Comparator<Activity> (){
+        public int compare (Activity a,Activity b)
+        {
+          int aLeft = (totalWeeks - weeksPassed) - a.getCompleted();
+          int bLeft = (totalWeeks - weeksPassed) - b.getCompleted();
+          if (aLeft != bLeft){
+            if (aLeft < bLeft){
+              return -1;
+            }
+            else{
+              return 1;
+            }
+          }
+          else
+          {
+            int aRanks = 0;
+            int bRanks = 0;
+            for (Student s : students)
+            {
+              aRanks += s.getRank (a);
+              bRanks += s.getRank (b);
+            }
+            if (aRanks < bRanks){
+              return 1;
+            }
+            else if (aRanks > bRanks){
+              return -1;
+            }
+            else{
+              return 0;
+            }
+          }
+        }
+      });
+  }
   public static String formatFileName (File file)
   {
     String name = file.getName();
@@ -241,4 +286,4 @@ public class Lawgbook
     }
     return name;
   }
-}
+  }
