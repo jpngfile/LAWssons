@@ -84,6 +84,7 @@ public class Lawgbook
   {
     students.add (s); 
   }
+  
   public void addActivity (String name)
   {
     Activity a = new Activity (name);
@@ -92,6 +93,7 @@ public class Lawgbook
     {
       s.addRanking (a,0); 
     }
+    rankActivities();
   }
   
   public void addActivity (String name,int completed)
@@ -102,6 +104,7 @@ public class Lawgbook
     {
       s.addRanking (a,0); 
     }
+    rankActivities();
   }
   
   public void addLesson (Lesson l)
@@ -111,6 +114,7 @@ public class Lawgbook
   //returns if removal was successful
   public boolean removeActivity (String name)
   {
+    rankActivities();
     for (Activity a : activities)
     {
       if (a.getName().equals (name)){
@@ -126,13 +130,12 @@ public class Lawgbook
   
   public boolean removeStudent (String name)
   {
+    rankActivities();
     for (int x = 0; x < students.size();x++)
     {
       Student s = students.get(x);
       if (s.getName().equals (name))
       {
-//      if (x != students.size() - 1)
-//        dynamicDiff--;
         students.remove (s);
         return true;
       }
@@ -266,10 +269,10 @@ public class Lawgbook
               bRanks += s.getRank (b);
             }
             if (aRanks < bRanks){
-              return 1;
+              return -1;
             }
             else if (aRanks > bRanks){
-              return -1;
+              return 1;
             }
             else{
               return 0;

@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.*;
 import java.awt.event.*;
+import java.util.*;
 import java.awt.print.PrinterException;
 
 /**
@@ -151,10 +152,32 @@ public class DisplayPanel extends JPanel implements ActionListener
 //    {
 //    }
     else if (a.equals ("Make lesson"))
-    {      
+    {
+      LessonInputPanel panel = new LessonInputPanel ();
+      int choice = JOptionPane.showConfirmDialog (this,panel,"New Lesson Input",JOptionPane.OK_CANCEL_OPTION);
+      if (choice == JOptionPane.OK_OPTION){
+        try{
+          String title = panel.titleField.getText();
+          int num = Integer.parseInt (panel.numField.getText());
+          ArrayList<Activity> list = new ArrayList<Activity>();
+          list.addAll (getLawgbook().sorted.subList (0,num));
+          getLawgbook().addLesson (new Lesson (title,new Date (System.currentTimeMillis()),list));
+          JOptionPane.showMessageDialog (this,"You've successfuly made a lesson.","Lesson Created",JOptionPane.INFORMATION_MESSAGE);
+        }
+        catch (NumberFormatException e)
+        {
+          JOptionPane.showMessageDialog (this,"Input is invalid.","Input error",JOptionPane.ERROR_MESSAGE);
+        }
+        catch (IndexOutOfBoundsException ie)
+        {
+          JOptionPane.showMessageDialog (this,"Number of activities cannot exceed total number of activities.","Input error",JOptionPane.ERROR_MESSAGE);
+        }
+      }
     }
     else if (a.equals ("See lessons"))
     {
+      ActionListener al = ((ActionListener)getParent().getParent().getParent().getParent().getParent());
+      al.actionPerformed (new ActionEvent (al,0,"See lessons"));
     }
     else if (a.equals ("Update"))
     {      

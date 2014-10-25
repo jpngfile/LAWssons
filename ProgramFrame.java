@@ -29,9 +29,11 @@ import java.util.ArrayList;
  * @author Jason P'ng
  * @version  1.6 October 17th, 2014
  */
+//Note: Lawgbook could be static. There is only ever one and it is used by many classes
 public class ProgramFrame extends JFrame implements ActionListener
 {
   DisplayPanel display;
+  LessonPanel lessons;
   JPanel mainPanel;
   JFileChooser fileChooser;
   public ProgramFrame ()
@@ -41,11 +43,12 @@ public class ProgramFrame extends JFrame implements ActionListener
     mainPanel = new JPanel (new CardLayout());
     
     display = new DisplayPanel ();
+    lessons = new LessonPanel(this,display.getLawgbook());
     setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
-    mainPanel.setSize (this.getSize());
-    //mainPanel.add ("lessons", new LessonPanel(this));
+    mainPanel.setSize (this.getSize());    
     mainPanel.add ("intro",new IntroPanel());
     mainPanel.add ("display",display);
+    mainPanel.add ("lessons", lessons);
     getContentPane().add(mainPanel);
     JMenuItem newItem = new JMenuItem ("New");
     JMenuItem openItem = new JMenuItem ("Open");
@@ -114,6 +117,17 @@ public class ProgramFrame extends JFrame implements ActionListener
       display.refreshData();
       
     }
+    else if (a.equals ("See lessons"))
+    {
+      if (display.getLawgbook().getNumLessons() > 0){
+        lessons.setData (lessons.getIndex());
+      }
+     show ("lessons"); 
+    }
+    else if (a.equals ("Return"))
+    {
+      show ("display");
+    }
     else if (a.equals ("Quit"))
     {
       checkSaved ();
@@ -157,6 +171,7 @@ public class ProgramFrame extends JFrame implements ActionListener
       }
       out.println (l.getNumLessons());
       for (Lesson f : l.getLessons ()){
+        out.println (f.getTitle());
         out.println (f.getDate());
         out.println (f.getActivities().size());
         for (Activity a : f.getActivities ()){
@@ -242,6 +257,7 @@ public class ProgramFrame extends JFrame implements ActionListener
           }
           int numLessons = Integer.parseInt (in.readLine ());
           for (int x = 0;x < numLessons;x++){
+            String title = in.readLine();
             long time = Long.parseLong(in.readLine ());
             Date newDate = new Date (time);
             int listLength = Integer.parseInt (in.readLine ());
@@ -249,7 +265,7 @@ public class ProgramFrame extends JFrame implements ActionListener
             for (int y = 0;y < listLength;y++){
               list.add (new Activity (in.readLine ()));
             }
-            l.addLesson (new Lesson (newDate,list));
+            l.addLesson (new Lesson (title,newDate,list));
           }
           in.readLine ();//footer
           in.close(); 
@@ -264,6 +280,7 @@ public class ProgramFrame extends JFrame implements ActionListener
         {
           JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
+        //could clear this up with a nested method
         catch (NumberFormatException n)
         {
           l.clearData();
