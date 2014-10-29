@@ -31,6 +31,7 @@ public class LessonPanel extends JPanel implements ActionListener
     printButton.addActionListener (this);
     deleteButton.addActionListener (this);
     nextButton.addActionListener (this);
+    GroupLayout layout = new GroupLayout (this);
     add (classLabel,BorderLayout.NORTH);
     add (list,BorderLayout.CENTER);
     add (previousButton,BorderLayout.SOUTH);
@@ -39,6 +40,33 @@ public class LessonPanel extends JPanel implements ActionListener
     add (printButton,BorderLayout.SOUTH);
     add (deleteButton,BorderLayout.SOUTH);
     add (nextButton,BorderLayout.SOUTH);
+    layout.setAutoCreateGaps (true);
+    layout.setAutoCreateContainerGaps (true);
+    layout.setHorizontalGroup (layout.createParallelGroup ()
+                                 .addComponent (classLabel)
+                                 .addComponent (list)
+                                 .addGroup (layout.createSequentialGroup ()
+                                              .addComponent (previousButton)
+                                              .addComponent (editButton)
+                                              .addComponent (printButton)
+                                              .addComponent (deleteButton)
+                                              .addComponent (returnButton)
+                                              .addComponent (nextButton)
+                                              )
+                               );
+    layout.setVerticalGroup (layout.createSequentialGroup()
+                                .addComponent (classLabel)
+                                 .addComponent (list)
+                                 .addGroup (layout.createParallelGroup ()
+                                              .addComponent (previousButton)
+                                              .addComponent (editButton)
+                                              .addComponent (printButton)
+                                              .addComponent (deleteButton)
+                                              .addComponent (returnButton)
+                                              .addComponent (nextButton)
+                                              )
+                               );
+    setLayout (layout);
     setVisible (true);
   }
   

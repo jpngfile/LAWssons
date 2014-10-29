@@ -217,6 +217,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     if (checkSaved ()){
       Lawgbook l = display.getLawgbook ();
       File file;
+      //This crashed once with a nullpointerException
       fileChooser.showOpenDialog(this); //I need to access a component for this to work. May have to move location of IO Methods
       file = fileChooser.getSelectedFile();
       if (file != null){
