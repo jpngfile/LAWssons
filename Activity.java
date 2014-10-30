@@ -50,4 +50,11 @@ public class Activity
  {
    return getName();
  }
+ 
+ public boolean equals (Activity b)
+ {
+   if (b.getName().equals (getName()))
+     return true;
+   return false;
+ }
 }

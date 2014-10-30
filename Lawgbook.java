@@ -253,10 +253,10 @@ public class Lawgbook
           int bLeft = (totalWeeks - weeksPassed) - b.getCompleted();
           if (aLeft != bLeft){
             if (aLeft < bLeft){
-              return -1;
+              return 1;
             }
             else{
-              return 1;
+              return -1;
             }
           }
           else

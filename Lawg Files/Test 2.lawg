@@ -7,17 +7,17 @@ Law's Swimming Class
 Swimming
 0
 Tredding
-0
+2
 Diving
-0
+2
 First-aid
-0
+4
 Weightlifting
-0
+3
 Calculus
 0
 Curling
-0
+1
 Knowledge of Law
 0
 3
@@ -72,5 +72,29 @@ Curling
 7
 Knowledge of Law
 8
-0
+3
+sad
+14146215960301
+1
+Swimming
+glad
+14146215960307
+7
+Swimming
+Tredding
+Diving
+First-aid
+Weightlifting
+Calculus
+Curling
+mad
+14146215960307
+7
+First-aid
+Weightlifting
+Tredding
+Diving
+Curling
+Swimming
+Calculus
 End of File

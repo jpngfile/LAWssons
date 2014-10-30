@@ -172,7 +172,7 @@ public class ProgramFrame extends JFrame implements ActionListener
       out.println (l.getNumLessons());
       for (Lesson f : l.getLessons ()){
         out.println (f.getTitle());
-        out.println (f.getDate());
+        out.println (f.getDate().getTime());
         out.println (f.getActivities().size());
         for (Activity a : f.getActivities ()){
           out.println (a.getName());

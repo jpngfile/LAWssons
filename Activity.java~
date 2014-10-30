@@ -45,4 +45,9 @@ public class Activity
  {
    return completed;
  }
+ 
+ public String toString ()
+ {
+   return getName();
+ }
 }

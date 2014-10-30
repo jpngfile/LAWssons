@@ -34,7 +34,7 @@ public class Lesson
     date = newDate;
   }
   
-  public void setActivites (ArrayList<Activity> list)
+  public void setActivities (ArrayList<Activity> list)
   {
     activities = list;
   }
