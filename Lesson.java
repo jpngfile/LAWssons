@@ -48,4 +48,9 @@ public class Lesson
   {
     title = newTitle;
   }
+  
+  public String toString ()
+  {
+    return getTitle();
+  }
 }

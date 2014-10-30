@@ -180,7 +180,25 @@ public class DisplayPanel extends JPanel implements ActionListener
       al.actionPerformed (new ActionEvent (al,0,"See lessons"));
     }
     else if (a.equals ("Update"))
-    {      
+    {
+      LessonUpdatePanel panel = new LessonUpdatePanel ();
+      int choice = JOptionPane.showConfirmDialog (this,panel,"Update",JOptionPane.OK_CANCEL_OPTION);
+      if (choice == JOptionPane.OK_OPTION){
+        ArrayList<Activity> list = panel.getItem().getActivities();
+        for (Activity c : getLawgbook().getActivities()){
+          for (Activity b : list){
+            if (c.equals (b)){
+              c.setCompleted (c.getCompleted() + 1);
+              break;
+            }
+          }
+        }
+        getLawgbook().setWeeksPassed(getLawgbook().getWeeksPassed() + 1);
+        if (getLawgbook().getWeeksPassed() == getLawgbook().getTotalWeeks()){
+          JOptionPane.showMessageDialog (this,"This class has finished.",getLawgbook().getWeeksPassed() + " weeks passed",JOptionPane.INFORMATION_MESSAGE);
+        }
+        refreshData ();
+      }
     }
   }
   
@@ -216,5 +234,22 @@ public class DisplayPanel extends JPanel implements ActionListener
     model.setRowCount (getLawgbook().getNumActivities());
     titleLabel.setText (getLawgbook().getTitle());
     table.updateUI ();
+  }
+  
+  private class LessonUpdatePanel extends JPanel
+  {
+    JComboBox<Lesson> lessonBox;
+   public LessonUpdatePanel ()
+      {
+      lessonBox = new JComboBox<Lesson>(getLawgbook().getLessons().toArray(new Lesson [0]));
+      add (new JLabel ("Lesson: "));
+      add (lessonBox,BorderLayout.CENTER);
+      setVisible (true);
+      }
+   
+   public Lesson getItem ()
+   {
+     return (Lesson)lessonBox.getSelectedItem ();
+   }
   }
 }

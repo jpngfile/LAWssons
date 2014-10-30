@@ -32,7 +32,7 @@ public class LessonPanel extends JPanel implements ActionListener
     deleteButton.addActionListener (this);
     nextButton.addActionListener (this);
     GroupLayout layout = new GroupLayout (this);
-
+    
     layout.setAutoCreateGaps (true);
     layout.setAutoCreateContainerGaps (true);
     layout.setHorizontalGroup (layout.createParallelGroup ()
@@ -45,20 +45,20 @@ public class LessonPanel extends JPanel implements ActionListener
                                               .addComponent (deleteButton)
                                               .addComponent (returnButton)
                                               .addComponent (nextButton)
-                                              )
-                               );
+                                           )
+                              );
     layout.setVerticalGroup (layout.createSequentialGroup()
-                                .addComponent (classLabel)
-                                 .addComponent (list)
-                                 .addGroup (layout.createParallelGroup ()
-                                              .addComponent (previousButton)
-                                              .addComponent (editButton)
-                                              .addComponent (printButton)
-                                              .addComponent (deleteButton)
-                                              .addComponent (returnButton)
-                                              .addComponent (nextButton)
-                                              )
-                               );
+                               .addComponent (classLabel)
+                               .addComponent (list)
+                               .addGroup (layout.createParallelGroup ()
+                                            .addComponent (previousButton)
+                                            .addComponent (editButton)
+                                            .addComponent (printButton)
+                                            .addComponent (deleteButton)
+                                            .addComponent (returnButton)
+                                            .addComponent (nextButton)
+                                         )
+                            );
     setLayout (layout);
     setVisible (true);
   }
@@ -80,7 +80,7 @@ public class LessonPanel extends JPanel implements ActionListener
     {
       index--;
       if (index  < 0){
-       index = lawgbook.getNumLessons() - 1; 
+        index = lawgbook.getNumLessons() - 1; 
       }
       list.setListData ((Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0])));
     }
@@ -96,11 +96,26 @@ public class LessonPanel extends JPanel implements ActionListener
     }
     else if (a.equals ("Delete"))
     {
-      
+      lawgbook.getLessons().remove (index);
+      if (lawgbook.getNumLessons () == 0)
+      {
+        actionPerformed (new ActionEvent (this,0,"Return"));
+      }
+      else{
+        if (index == lawgbook.getNumLessons ()){
+         index--; 
+        }
+        setData (index);
+      }
     }
     else if (a.equals ("Print"))
     {
-      
+      Printer p = new Printer ();
+      for (int x = 0;x < getNumActivities();x++)
+      {
+        p.println (lawgbook.getLessons().get(index).getActivities().get(x).toString());
+      }
+      p.printUsingDialog();
     }
     else if (a.equals ("Return"))
     {
@@ -111,12 +126,16 @@ public class LessonPanel extends JPanel implements ActionListener
     {
       index++;
       if (index >= lawgbook.getNumLessons()){
-       index = 0; 
+        index = 0; 
       }
       list.setListData ((Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0])));
     }
   }
   
+public int getNumActivities ()
+{
+  return lawgbook.getLessons().get(index).getActivities().size();
+}
   public int getIndex ()
   {
     return index;
@@ -125,104 +144,104 @@ public class LessonPanel extends JPanel implements ActionListener
   public void setData (int index)
   {
     Activity [] aList = (Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0]));
-   list.setListData (aList);
+    list.setListData (aList);
   }
   
-private class LessonEditPanel extends JPanel implements ActionListener
-{
-  JComboBox<Activity> addBox;
-  JComboBox<Activity> removeBox;
-  public LessonEditPanel (Lesson l)
+  private class LessonEditPanel extends JPanel implements ActionListener
   {
-    removeBox = new JComboBox<Activity> (l.getActivities().toArray (new Activity [0]));
-    ArrayList<Activity> copy = new ArrayList<Activity>();
-    copy.addAll(lawgbook.getActivities());
-    copy = removeActivities (copy,l.getActivities());
-    //copy.removeAll (l.getActivities());
-    addBox = new JComboBox <Activity> (copy.toArray(new Activity [0]));
-    JButton addButton = new JButton ("Add");
-    JButton removeButton = new JButton ("Remove");
+    JComboBox<Activity> addBox;
+    JComboBox<Activity> removeBox;
+    public LessonEditPanel (Lesson l)
+    {
+      removeBox = new JComboBox<Activity> (l.getActivities().toArray (new Activity [0]));
+      ArrayList<Activity> copy = new ArrayList<Activity>();
+      copy.addAll(lawgbook.getActivities());
+      copy = removeActivities (copy,l.getActivities());
+      //copy.removeAll (l.getActivities());
+      addBox = new JComboBox <Activity> (copy.toArray(new Activity [0]));
+      JButton addButton = new JButton ("Add");
+      JButton removeButton = new JButton ("Remove");
 //    JButton cancelButton = new JButton ("Cancel");
 //    JButton okButton = new JButton ("Ok");
-    addButton.addActionListener (this);
-    removeButton.addActionListener (this);
-    GroupLayout layout = new GroupLayout (this);
-    layout.setAutoCreateGaps (true);
-    layout.setAutoCreateContainerGaps (true);
-    layout.setHorizontalGroup (layout.createSequentialGroup ()
+      addButton.addActionListener (this);
+      removeButton.addActionListener (this);
+      GroupLayout layout = new GroupLayout (this);
+      layout.setAutoCreateGaps (true);
+      layout.setAutoCreateContainerGaps (true);
+      layout.setHorizontalGroup (layout.createSequentialGroup ()
+                                   .addGroup (layout.createParallelGroup ()
+                                                .addComponent (addBox)
+                                                .addComponent (removeBox))
+                                   .addGroup (layout.createParallelGroup ()
+                                                .addComponent (addButton)
+                                                .addComponent (removeButton))
+                                );
+      layout.setVerticalGroup (layout.createSequentialGroup ()
                                  .addGroup (layout.createParallelGroup ()
                                               .addComponent (addBox)
-                                              .addComponent (removeBox))
+                                              .addComponent (addButton))
                                  .addGroup (layout.createParallelGroup ()
-                                              .addComponent (addButton)
+                                              .addComponent (removeBox)
                                               .addComponent (removeButton))
-                                 );
-    layout.setVerticalGroup (layout.createSequentialGroup ()
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (addBox)
-                                            .addComponent (addButton))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (removeBox)
-                                            .addComponent (removeButton))
-                               );
-    setLayout (layout);
-    setVisible (true);
-  }
-  
-  public void actionPerformed (ActionEvent ae)
-  {
-   String a = ae.getActionCommand ();
-   if (a.equals ("Add"))
-   {
-     if (addBox.getSelectedItem() != null){
-     removeBox.addItem ((Activity)addBox.getSelectedItem ());
-     addBox.removeItem (addBox.getSelectedItem());
-     }
-   }
-   else if (a.equals ("Remove"))
-   {
-     if (removeBox.getSelectedItem () != null){
-     addBox.addItem ((Activity)removeBox.getSelectedItem ());
-     removeBox.removeItem (removeBox.getSelectedItem());
-     }
-   }
-  }
-  
-  public ArrayList<Activity> getAddActivities ()
-  {
-    ArrayList<Activity> list = new ArrayList<Activity> ();
-    for (int x = 0;x < addBox.getItemCount();x++)
-    {
-      list.add (addBox.getItemAt (x));
+                              );
+      setLayout (layout);
+      setVisible (true);
     }
-    return list;
-  }
-  
-  public ArrayList<Activity> getRemoveActivities ()
-  {
-    ArrayList<Activity> list = new ArrayList<Activity> ();
-    for (int x = 0;x < removeBox.getItemCount();x++)
+    
+    public void actionPerformed (ActionEvent ae)
     {
-      list.add (removeBox.getItemAt (x));
-    }
-    return list;
-  }
-  public ArrayList<Activity> removeActivities (ArrayList<Activity> original, ArrayList<Activity> remove)
-  {
-    for (int x = 0;x < original.size();x++)
-    {
-      Activity a = original.get(x);
-      for (int y = 0;y < remove.size();y++)
+      String a = ae.getActionCommand ();
+      if (a.equals ("Add"))
       {
-        Activity b = remove.get (y);
-        if (a.equals (b)){
-          original.remove (a);
-          x--;
-          break;
+        if (addBox.getSelectedItem() != null){
+          removeBox.addItem ((Activity)addBox.getSelectedItem ());
+          addBox.removeItem (addBox.getSelectedItem());
+        }
+      }
+      else if (a.equals ("Remove"))
+      {
+        if (removeBox.getSelectedItem () != null){
+          addBox.addItem ((Activity)removeBox.getSelectedItem ());
+          removeBox.removeItem (removeBox.getSelectedItem());
         }
       }
     }
-    return original;
+    
+    public ArrayList<Activity> getAddActivities ()
+    {
+      ArrayList<Activity> list = new ArrayList<Activity> ();
+      for (int x = 0;x < addBox.getItemCount();x++)
+      {
+        list.add (addBox.getItemAt (x));
+      }
+      return list;
+    }
+    
+    public ArrayList<Activity> getRemoveActivities ()
+    {
+      ArrayList<Activity> list = new ArrayList<Activity> ();
+      for (int x = 0;x < removeBox.getItemCount();x++)
+      {
+        list.add (removeBox.getItemAt (x));
+      }
+      return list;
+    }
+    public ArrayList<Activity> removeActivities (ArrayList<Activity> original, ArrayList<Activity> remove)
+    {
+      for (int x = 0;x < original.size();x++)
+      {
+        Activity a = original.get(x);
+        for (int y = 0;y < remove.size();y++)
+        {
+          Activity b = remove.get (y);
+          if (a.equals (b)){
+            original.remove (a);
+            x--;
+            break;
+          }
+        }
+      }
+      return original;
+    }
   }
-}
 }

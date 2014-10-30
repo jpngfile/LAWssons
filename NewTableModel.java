@@ -105,8 +105,7 @@ public class NewTableModel extends AbstractTableModel
       case 2: //This doesn't work
         break;
       default : lawgbook.getStudent (columnIndex - 3).setRanking (lawgbook.getActivity (rowIndex),Integer.parseInt (s));
-    }
-    
+    }    
     lawgbook.setSaved (false);
   }
   

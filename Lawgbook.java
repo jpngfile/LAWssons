@@ -251,7 +251,7 @@ public class Lawgbook
         {
           int aLeft = (totalWeeks - weeksPassed) - a.getCompleted();
           int bLeft = (totalWeeks - weeksPassed) - b.getCompleted();
-          if (aLeft != bLeft){
+          if (aLeft != bLeft && (a.getCompleted() < activityMin || b.getCompleted() < activityMin)){
             if (aLeft < bLeft){
               return 1;
             }

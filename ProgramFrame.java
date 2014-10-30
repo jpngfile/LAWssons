@@ -98,8 +98,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     String a = ae.getActionCommand ();
     if (a.equals ("New"))
     {
-      newFile();
-      
+      newFile();      
     }
     else if (a.equals ("Save"))
     {
@@ -114,15 +113,17 @@ public class ProgramFrame extends JFrame implements ActionListener
     else if (a.equals ("Open"))
     {
       open ();
-      display.refreshData();
-      
+      display.refreshData();      
     }
     else if (a.equals ("See lessons"))
     {
       if (display.getLawgbook().getNumLessons() > 0){
         lessons.setData (lessons.getIndex());
+        show ("lessons"); 
       }
-     show ("lessons"); 
+      else{
+        JOptionPane.showMessageDialog (this,"There are no lessons to show.","No lessons",JOptionPane.ERROR_MESSAGE);
+      }     
     }
     else if (a.equals ("Return"))
     {
