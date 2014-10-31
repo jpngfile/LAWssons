@@ -24,18 +24,36 @@ import java.util.ArrayList;
 /**
  * The primary JFrame for containing the program.
  * FileIO is executed from here.
- * For FileIO, will have to error trap for failed operations so that data isn't cleared prematurely
  * 
  * @author Jason P'ng
- * @version  1.6 October 17th, 2014
+ * @version  3.0 October 30th, 2014
  */
 //Note: Lawgbook could be static. There is only ever one and it is used by many classes
 public class ProgramFrame extends JFrame implements ActionListener
 {
+  /**
+   * The panel that displays the data table.
+   */
   DisplayPanel display;
+  
+  /**
+   * Panel that displays the lessons of the lawgbook.
+   */
   LessonPanel lessons;
+  
+  /**
+   * The unseen panel that contains all displayable panels.
+   */
   JPanel mainPanel;
+  
+  /**
+   * Dialog panel for choosing files for FileIO.
+   */
   JFileChooser fileChooser;
+  
+  /**
+   * Constructor for setting up the frame and all panels.
+   */
   public ProgramFrame ()
   {
     super ("Lawssons");
@@ -43,7 +61,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     mainPanel = new JPanel (new CardLayout());
     
     display = new DisplayPanel ();
-    lessons = new LessonPanel(this,display.getLawgbook());
+    lessons = new LessonPanel(display.getSize(),display.getLawgbook());
     setSize ((int)(display.getPreferredSize().getWidth() + 15),(int)display.getPreferredSize().getHeight());
     mainPanel.setSize (this.getSize());    
     mainPanel.add ("intro",new IntroPanel());
@@ -74,7 +92,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     saveItem.addActionListener (this);
     saveAsItem.addActionListener (this);
     quitItem.addActionListener (this);
-    //setLocation (0,0);
+    setLocation (200,100);
     addWindowListener (new WindowAdapter ()
                          {
       public void windowClosing (WindowEvent event)
@@ -93,6 +111,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     fileChooser.addChoosableFileFilter (filter);//necessary?
   }
   
+  @Override
   public void actionPerformed (ActionEvent ae)
   {
     String a = ae.getActionCommand ();
@@ -136,6 +155,12 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
   }
   
+  /**
+   * Shows the panel designated by the given String.
+   * This uses the cardLayout in the main panel to flip between panels.
+   * 
+   * @param panel The String to designate the panel to be shown.
+   */
   public void show (String panel)
   {
     CardLayout cl = (CardLayout)(mainPanel.getLayout());
@@ -144,6 +169,13 @@ public class ProgramFrame extends JFrame implements ActionListener
   }
   //make sure l is a reference and not value
   //should save weeks and weeks passed
+  
+  /**
+   * Saves the data in the lawgbook into the given file.
+   * 
+   * @param file The file to save the data in.
+   * @return If the saving operation was successful.
+   */
   public boolean save (File file)
   {
     try
@@ -191,6 +223,13 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
   }
   
+  /**
+   * Saves the current data with a file name.
+   * This will open a file dialog for saving the name of the file.
+   * If this is the first time data has been saved, this method will run.
+   * 
+   * @return Whether or not the saving was successful.
+   */
   public boolean saveAs ()
   {
     File file;
@@ -212,25 +251,41 @@ public class ProgramFrame extends JFrame implements ActionListener
   }
   
   //should read in amount of weeks and weeks passed now
+  /**
+   * Opens a file dialog for opening .lawg files.
+   * If successful, the lawg file will be read and put into the current lawgbook.
+   */
   public void open ()
   {
     //Check for saving the current file
     if (checkSaved ()){
-      Lawgbook l = display.getLawgbook ();
+      final Lawgbook l = display.getLawgbook ();
       File file;
-      //This crashed once with a nullpointerException
+      //This crashed a few times with a nullpointerException
       fileChooser.showOpenDialog(this); //I need to access a component for this to work. May have to move location of IO Methods
       file = fileChooser.getSelectedFile();
       if (file != null){
         //Create temporary arrayLists in case something goes wrong
-        ArrayList<Activity> a = new ArrayList<Activity>();
+        final ArrayList<Activity> a = new ArrayList<Activity>();
         a.addAll (l.getActivities());
-        ArrayList<Student> st = new ArrayList<Student>();
+        final ArrayList<Student> st = new ArrayList<Student>();
         st.addAll (l.getStudents());
-        ArrayList<Lesson> lessons = new ArrayList<Lesson>();
+        final ArrayList<Lesson> lessons = new ArrayList<Lesson>();
         lessons.addAll (l.getLessons());
-        String oldTitle = l.getTitle();
-        int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin()};
+        final String oldTitle = l.getTitle();
+        final int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin()};
+       class Restore {
+        public  void restoreData (){
+          l.clearData();
+          l.getActivities().addAll(a);
+          l.getStudents().addAll (st);
+          l.getLessons().addAll (lessons);
+          l.setTitle (oldTitle);
+          l.setTotalWeeks (stats [0]);
+          l.setWeeksPassed (stats[1]);
+          l.setActivityMin (stats [2]);
+        }
+        }
         try{
           BufferedReader in = new BufferedReader (new FileReader (file));        
           l.clearData();
@@ -277,7 +332,7 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.setFile (file);
           //Display the info
           show ("display");
-        }
+        }        
         catch (IOException e)
         {
           JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
@@ -285,32 +340,22 @@ public class ProgramFrame extends JFrame implements ActionListener
         //could clear this up with a nested method
         catch (NumberFormatException n)
         {
-          l.clearData();
-          l.getActivities().addAll(a);
-          l.getStudents().addAll (st);
-          l.getLessons().addAll (lessons);
-          l.setTitle (oldTitle);
-          l.setTotalWeeks (stats [0]);
-          l.setWeeksPassed (stats[1]);
-          l.setActivityMin (stats [2]);
+          (new Restore()).restoreData ();
           JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
         catch (NullPointerException p)
         {
-          l.clearData();
-          l.getActivities().addAll (a);
-          l.getStudents().addAll (st);
-          l.getLessons().addAll (lessons);
-          l.setTitle (oldTitle);
-          l.setTotalWeeks (stats [0]);
-          l.setWeeksPassed (stats[1]);
-          l.setActivityMin (stats [2]);
+          (new Restore()).restoreData ();
           JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
       }
     }
   }
   
+  /**
+   * Creates a new class, and thereby a new lawgbook.
+   * It opens a dialog for inputting data necessary for a new class and will cancel if data is invalid.
+   */
   public void newFile ()
   {
     //Check for saving the current file
@@ -343,6 +388,11 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
   } 
   
+  /**
+   * Saves a the current file, checking if the data has been saved before.
+   * 
+   * @return If the save operation was successful, true, otherwise false.
+   */
   public boolean saveFile ()
   {
     if (display.getLawgbook().getFile() == null){
@@ -353,6 +403,12 @@ public class ProgramFrame extends JFrame implements ActionListener
     }
   }
   
+  /**
+   * Checks if the current file is saved, or new and doesn't need to be saved.
+   * If it isn't saved, the user is prompted to save it.
+   * 
+   * @return If the user saves the file successfully, or acknowledges data will be lost, return true, otherwise false.
+   */
   public boolean checkSaved ()
   {
     //This needs to be fixed for new files. Remove the second part
@@ -369,8 +425,17 @@ public class ProgramFrame extends JFrame implements ActionListener
     return true;
   }
   
+  /**
+   * KeyAdapter class for keyboard input.
+   * May be implemented later for keyboard shortcuts.
+   */
   class KListen extends KeyAdapter
   {
+    /**
+     * Reactionary response for keys being pressed.
+     * 
+     * @param k keyboard action to find the key  being pressed.
+     */
     public void keyPressed (KeyEvent k)
     {
       int a = k.getKeyCode();

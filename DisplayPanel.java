@@ -1,9 +1,18 @@
-import javax.swing.*;
-import java.awt.*;
-import javax.swing.table.*;
-import java.awt.event.*;
-import java.util.*;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
+import javax.swing.GroupLayout;
+import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+import java.awt.BorderLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.print.PrinterException;
+import java.util.ArrayList;
+import java.sql.Date;
 
 /**
  * The main class for displaying the status of a class in the form of a table and interacting with it.
@@ -12,9 +21,21 @@ import java.awt.print.PrinterException;
  */
 public class DisplayPanel extends JPanel implements ActionListener
 {
+  /**
+   * The data model that accesses the lawgbook to then provide the appropriate data to the table.
+   */
   NewTableModel model;
+  /**
+   * The table that displays the data about the class.
+   */
   JTable table;
+  /**
+   * Label to display the name of the class.
+   */
   JLabel titleLabel;
+  /**
+   * The constructor of the panel to set up the table,buttons, and all formatting.
+   */
   public DisplayPanel ()
   {
     //tables start at index 1,1
@@ -91,6 +112,11 @@ public class DisplayPanel extends JPanel implements ActionListener
     
   }
   
+  /**
+   * Implementation for actionListener to connect buttons with actions.
+   *
+   * @param ae The command that triggers this method to know which button was pressed.
+   */
   public void actionPerformed (ActionEvent ae)
   {
     String a = ae.getActionCommand ();
@@ -99,9 +125,7 @@ public class DisplayPanel extends JPanel implements ActionListener
       //What does this return if the textfield is empty?
       String studentName = JOptionPane.showInputDialog (this, "Enter the name of the student.");
       if (studentName != null && studentName.length() > 0){
-        //System.out.println (studentName);
         model.addColumn (studentName);
-        //System.out.println ("Added student");
         table.addColumn (new TableColumn(model.getColumnCount() - 1));
         repaint ();
       }
@@ -111,7 +135,6 @@ public class DisplayPanel extends JPanel implements ActionListener
       String activityName = JOptionPane.showInputDialog (this, "Enter the name of the activity.");
       if (activityName != null && activityName.length() > 0){
         model.addActivity (activityName);
-        //System.out.println ("Added activity");
         repaint ();}
     }
     else if (a.equals ("Remove Student"))
@@ -202,20 +225,30 @@ public class DisplayPanel extends JPanel implements ActionListener
     }
   }
   
+  /**
+   * Returns the lawgbook that the tablemodel is using.
+   * 
+   * @return the lawgbook that the tablemodel uses.
+   */
   public Lawgbook getLawgbook ()
   {
     return model.getLawgbook ();
   }
   
+  /**
+   * Refreshes the headers of the columns to match the data. This is called when the number of columns is changed.
+   */
   public void refreshHeaders ()
   {
     for (int x = 0;x < model.getColumnCount();x++)
     {
       table.getTableHeader().getColumnModel().getColumn(x).setHeaderValue (model.getColumnName(x));
-      //System.out.println ("Index " + x + ": " + table.getTableHeader().getColumnModel().getColumn(x).getHeaderValue ());
     }
   }
   
+  /**
+   * Refreshes all the data in the table to match the lawgbook. This is called when new data is read in from file.
+   */
   public void refreshData ()
   {
     int newColumnCount = (getLawgbook().getNumStudents() + 3);
@@ -236,9 +269,18 @@ public class DisplayPanel extends JPanel implements ActionListener
     table.updateUI ();
   }
   
+  /**
+   * An input panel for choosing the lesson to update the data with.
+   */
   private class LessonUpdatePanel extends JPanel
   {
+    /**
+     * The combobox in which lessons can be selected from.
+     */
     JComboBox<Lesson> lessonBox;
+    /**
+     * The constructor for setting up the components and formatting.
+     */
    public LessonUpdatePanel ()
       {
       lessonBox = new JComboBox<Lesson>(getLawgbook().getLessons().toArray(new Lesson [0]));
@@ -247,6 +289,11 @@ public class DisplayPanel extends JPanel implements ActionListener
       setVisible (true);
       }
    
+   /**
+    * Returns the lesson that is currently  being selected.
+    *
+    * @return The lesson selected in the <code>JComboBox</code>.
+    */
    public Lesson getItem ()
    {
      return (Lesson)lessonBox.getSelectedItem ();

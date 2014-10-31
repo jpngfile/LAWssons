@@ -1,21 +1,51 @@
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.Dimension;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JOptionPane;
+import javax.swing.JComboBox;
+import javax.swing.GroupLayout;
+import java.util.ArrayList;
+
+/**
+ * Panel for displaying the lessons of a class.
+ * 
+ * @author Jason P'ng
+ * @version 3.0 October 30th, 2014
+ */
 public class LessonPanel extends JPanel implements ActionListener
 {
-  JFrame parent;
+  /**
+   * The label to display the name of the lesson.
+   */
   JLabel classLabel;
+  /**
+   * List to display the activities of the current lesson.
+   */
   JList<Activity> list;
+  /**
+   * Reference to the lawgbook to access the lessons.
+   */
   Lawgbook lawgbook;
+  /**
+   * The index of the lesson being displayed.
+   */
   int index = 0;
-  public LessonPanel (JFrame parent,Lawgbook l)
+  
+  /**
+   * Constructor for the panel setting up the components and layout.
+   * 
+   * @param d The dimensions for the panel. It is set to match the DisplayPanel.
+   * @param l The lawgbook to retrieve data from.
+   */
+  public LessonPanel (Dimension d,Lawgbook l)
   {
     super ();
     lawgbook = l;
-    //Activity [] aList = (Activity[])l.getLessons().get(index).getActivities().toArray();
-    this.parent = parent;
-    setSize (parent.getSize());
+    setSize (d);
     classLabel = new JLabel ("Class");
     
     list = new JList<Activity>(new Activity[0]);
@@ -63,16 +93,32 @@ public class LessonPanel extends JPanel implements ActionListener
     setVisible (true);
   }
   
+  /**
+   * Sets the displayed name on the name label.
+   * 
+   * @param newName The name of the current lesson.
+   */
   public void setName (String newName)
   {
     classLabel.setText (newName);
   }
   
+  /**
+   * Sets the activities of the displayed list.
+   * depreciated.
+   * @param newList List to set the list data to.
+   */
   public void setList (ArrayList<Activity> newList)
   {
     list.setListData (newList.toArray(new Activity [0]));
   }
   
+  /**
+   * Implementation for actionListener interface. Sets actions for each button.
+   * 
+   * @param ae Action triggering event to track source to know which button was pressed.
+   */
+  @Override
   public void actionPerformed (ActionEvent ae)
   {
     String a = ae.getActionCommand ();
@@ -89,14 +135,16 @@ public class LessonPanel extends JPanel implements ActionListener
       Lesson l = lawgbook.getLessons().get(index);
       LessonEditPanel panel = new LessonEditPanel (l);
       int choice = JOptionPane.showConfirmDialog (this,panel,"Editing",JOptionPane.OK_CANCEL_OPTION);
-      if (choice == JOptionPane.OK_OPTION){
+      if (choice == JOptionPane.OK_OPTION){        
         l.setActivities (panel.getRemoveActivities());
         setList (panel.getRemoveActivities ());
+        lawgbook.setSaved (false);
       }
     }
     else if (a.equals ("Delete"))
     {
       lawgbook.getLessons().remove (index);
+      lawgbook.setSaved (false);
       if (lawgbook.getNumLessons () == 0)
       {
         actionPerformed (new ActionEvent (this,0,"Return"));
@@ -132,25 +180,57 @@ public class LessonPanel extends JPanel implements ActionListener
     }
   }
   
+  /**
+   * Returns the amount of activities in the current lesson.
+   * 
+   * @return The amount of activities in the current lesson.
+   */
 public int getNumActivities ()
 {
   return lawgbook.getLessons().get(index).getActivities().size();
 }
+
+/**
+ * Returns the index of the current lesson
+ * 
+ * @return The index of the current lesson
+ */
   public int getIndex ()
   {
     return index;
   }
   
+  /**
+   * Sets the lesson shown in the list given the index of the lesson in the lawgbook.
+   * 
+   * @param index The index of the lesson to be shown.
+   */
   public void setData (int index)
   {
     Activity [] aList = (Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0]));
     list.setListData (aList);
+    setName (lawgbook.getLessons().get(index).getTitle());
   }
   
+  /**
+   * Panel for editing lessons. It contains JComboBoxes to display available activities to remove and add from the lesson.
+   */
   private class LessonEditPanel extends JPanel implements ActionListener
   {
+    /**
+     * Combo box containing activities that can be added to the lesson.
+     */
     JComboBox<Activity> addBox;
+    /**
+     * Combo box containing activities that can be removed from the current lesson.
+     */
     JComboBox<Activity> removeBox;
+    
+    /**
+     * Constructor for the panel setting up the data in the combo boxes and the layout of components.
+     * 
+     * @param l The lesson to determine which activites can be removed and added.
+     */
     public LessonEditPanel (Lesson l)
     {
       removeBox = new JComboBox<Activity> (l.getActivities().toArray (new Activity [0]));
@@ -188,6 +268,7 @@ public int getNumActivities ()
       setVisible (true);
     }
     
+    @Override
     public void actionPerformed (ActionEvent ae)
     {
       String a = ae.getActionCommand ();
@@ -207,6 +288,11 @@ public int getNumActivities ()
       }
     }
     
+    /**
+     * Returns the list of activites that are not in the current lesson.
+     * 
+     * @return An ArrayList of activites that are not in the current lesson.
+     */
     public ArrayList<Activity> getAddActivities ()
     {
       ArrayList<Activity> list = new ArrayList<Activity> ();
@@ -217,6 +303,11 @@ public int getNumActivities ()
       return list;
     }
     
+    /**
+     * Returns the list of activites that are in the current lesson.
+     * 
+     * @return An ArrayList of activites that are in the current lesson.
+     */
     public ArrayList<Activity> getRemoveActivities ()
     {
       ArrayList<Activity> list = new ArrayList<Activity> ();
@@ -226,6 +317,13 @@ public int getNumActivities ()
       }
       return list;
     }
+    
+    /**
+     * Returns the original ArrayList without any of the activites in the second arrayList.
+     * 
+     * @param original The original ArrayList to remove activites from.
+     * @param remove The ArrayList to check for duplicates of.
+     */
     public ArrayList<Activity> removeActivities (ArrayList<Activity> original, ArrayList<Activity> remove)
     {
       for (int x = 0;x < original.size();x++)

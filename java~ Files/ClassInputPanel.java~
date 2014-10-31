@@ -1,32 +1,10 @@
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.GroupLayout;
+import javax.swing.*;
 
-/**
- * An input panel for displaying textfields for creating a new class.
- * It includes fields for the class name, total number of weeks, and the minimum amount of times each activity must be taught.
- * 
- * @author Jason P'ng
- * @version 3.0 October 30th, 2014
- */
 public class ClassInputPanel extends JPanel
 {
-  /**
-   * Textfield for the name of the class
-   */
   JTextField nameField;
-  /**
-   * Textfield for the total amount of weeks this class will run.
-   */
   JTextField weekField;
-  /**
-   * Textfield for the minimum amount of times each activity must run during the class.
-   */
   JTextField activityField;
-  /**
-   * Constructor for setting up the panel with all the formatting and labels.
-   */
   public ClassInputPanel ()
   {
     JLabel nameLabel = new JLabel ("Class Name: ");
