@@ -25,10 +25,6 @@ public class ClassInputPanel extends JPanel
    */
   JTextField activityField;
   /**
-   * Textfield for the duration of a lesson.
-   */
-  JTextField lessonTimeField;
-  /**
    * Constructor for setting up the panel with all the formatting and labels.
    */
   public ClassInputPanel ()
@@ -36,11 +32,9 @@ public class ClassInputPanel extends JPanel
     JLabel nameLabel = new JLabel ("Class Name: ");
     JLabel weekLabel = new JLabel ("Number of weeks: ");
     JLabel activityLabel = new JLabel ("Min. times for each activity: ");
-    JLabel lessonLabel = new JLabel ("Duration of each lesson (min.): ");
      nameField = new JTextField (15);
      weekField = new JTextField (15);
      activityField = new JTextField (15);
-     lessonTimeField = new JTextField (15);
     GroupLayout layout = new GroupLayout (this);
     layout.setAutoCreateGaps (true);
     layout.setAutoCreateContainerGaps (true);
@@ -48,13 +42,11 @@ public class ClassInputPanel extends JPanel
                                  .addGroup (layout.createParallelGroup()
                                  .addComponent (nameLabel)
                                  .addComponent (weekLabel)
-                                 .addComponent (activityLabel)
-                                 .addComponent (lessonLabel))
+                                 .addComponent (activityLabel))
                                  .addGroup (layout.createParallelGroup ()
                                               .addComponent (nameField)
                                               .addComponent (weekField)
-                                              .addComponent (activityField)
-                                              .addComponent (lessonTimeField))
+                                              .addComponent (activityField))
                                  );
     layout.setVerticalGroup (layout.createSequentialGroup ()
                                .addGroup (layout.createParallelGroup ()
@@ -66,9 +58,6 @@ public class ClassInputPanel extends JPanel
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (activityLabel)
                                             .addComponent (activityField))
-                               .addGroup (layout.createParallelGroup ()
-                                            .addComponent (lessonLabel)
-                                            .addComponent (lessonTimeField))
                                );
     setLayout (layout);
     setVisible (true);

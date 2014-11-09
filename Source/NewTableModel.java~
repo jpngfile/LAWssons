@@ -176,7 +176,7 @@ public class NewTableModel extends AbstractTableModel
   {
     String s = obj.toString ();
     if (columnIndex > 0)
-    {
+    {      
       if (!isNumeric (s)){
         return;
       }
@@ -303,7 +303,7 @@ public class NewTableModel extends AbstractTableModel
   {
    try
    {
-    int d = Integer.parseInt (s); 
+    double d = Double.parseDouble (s); 
    }
    catch (NumberFormatException e)
    {

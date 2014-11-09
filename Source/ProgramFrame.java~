@@ -29,8 +29,6 @@ import java.util.ArrayList;
  * @version  3.0 October 30th, 2014
  */
 //Note: Lawgbook could be static. There is only ever one and it is used by many classes
-//Note: FileIO could be modified to allow any amount of new variables to lawgbook
-//Will need to call methods based on String
 public class ProgramFrame extends JFrame implements ActionListener
 {
   /**
@@ -104,7 +102,6 @@ public class ProgramFrame extends JFrame implements ActionListener
       }
     });
     addKeyListener (new KListen ());
-    setResizable (false);
     setVisible (true);    
     setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
     
@@ -191,12 +188,10 @@ public class ProgramFrame extends JFrame implements ActionListener
       out.println (l.getTotalWeeks());
       out.println (l.getWeeksPassed());
       out.println (l.getActivityMin());
-      out.println (l.getLessonTime());
       out.println (l.getNumActivities());
       for (Activity a : l.getActivities()){
         out.println (a.getName());
         out.println (a.getCompleted());
-        out.println (a.getTime());
       }
       //amount of rankings is equal to the amount of activites
       out.println (l.getNumStudents());
@@ -278,7 +273,7 @@ public class ProgramFrame extends JFrame implements ActionListener
         final ArrayList<Lesson> lessons = new ArrayList<Lesson>();
         lessons.addAll (l.getLessons());
         final String oldTitle = l.getTitle();
-        final int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin(),l.getLessonTime()};
+        final int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin()};
        class Restore {
         public  void restoreData (){
           l.clearData();
@@ -289,7 +284,6 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.setTotalWeeks (stats [0]);
           l.setWeeksPassed (stats[1]);
           l.setActivityMin (stats [2]);
-          l.setLessonTime (stats [3]);
         }
         }
         try{
@@ -301,12 +295,10 @@ public class ProgramFrame extends JFrame implements ActionListener
           l.setTotalWeeks (Integer.parseInt (in.readLine ()));
           l.setWeeksPassed (Integer.parseInt (in.readLine ()));
           l.setActivityMin (Integer.parseInt (in.readLine ()));
-          l.setLessonTime (Integer.parseInt (in.readLine()));
           int numActivities = Integer.parseInt (in.readLine());
           for (int x = 0;x < numActivities;x++){
             String name = in.readLine ();
             int completed = Integer.parseInt (in.readLine ());
-            int time = Integer.parseInt (in.readLine());
             l.addActivity (name,completed);
           }
           int numStudents = Integer.parseInt (in.readLine ());
@@ -345,17 +337,17 @@ public class ProgramFrame extends JFrame implements ActionListener
         {
           JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
-//        //could clear this up with a nested method
-//        catch (NumberFormatException n)
-//        {
-//          (new Restore()).restoreData ();
-//          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
-//        }
-//        catch (NullPointerException p)
-//        {
-//          (new Restore()).restoreData ();
-//          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
-//        }
+        //could clear this up with a nested method
+        catch (NumberFormatException n)
+        {
+          (new Restore()).restoreData ();
+          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
+        }
+        catch (NullPointerException p)
+        {
+          (new Restore()).restoreData ();
+          JOptionPane.showMessageDialog (this,"Corrupted Data.","File IO error",JOptionPane.ERROR_MESSAGE);
+        }
       }
     }
   }
@@ -377,13 +369,11 @@ public class ProgramFrame extends JFrame implements ActionListener
           String name = inputPanel.nameField.getText();
           int weekNum = Integer.parseInt (inputPanel.weekField.getText());
           int activityMin = Integer.parseInt (inputPanel.activityField.getText());
-          int lessonTime = Integer.parseInt (inputPanel.lessonTimeField.getText());
           Lawgbook l = display.getLawgbook ();
           l.setTitle (name);
           l.setTotalWeeks (weekNum);
           l.setWeeksPassed (0);
           l.setActivityMin (activityMin);
-          l.setLessonTime (lessonTime);
           l.setSaved (true);
           l.clearData();
           display.refreshData();

@@ -128,7 +128,7 @@ public class LessonPanel extends JPanel implements ActionListener
       if (index  < 0){
         index = lawgbook.getNumLessons() - 1; 
       }
-      setData (index);
+      list.setListData ((Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0])));
     }
     else if (a.equals ("Edit"))
     {
@@ -176,7 +176,7 @@ public class LessonPanel extends JPanel implements ActionListener
       if (index >= lawgbook.getNumLessons()){
         index = 0; 
       }
-      setData (index);
+      list.setListData ((Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0])));
     }
   }
   

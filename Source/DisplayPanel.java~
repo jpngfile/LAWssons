@@ -181,15 +181,9 @@ public class DisplayPanel extends JPanel implements ActionListener
       if (choice == JOptionPane.OK_OPTION){
         try{
           String title = panel.titleField.getText();
+          int num = Integer.parseInt (panel.numField.getText());
           ArrayList<Activity> list = new ArrayList<Activity>();
-          int currentTime = 0;
-          for (int x = 0;x < getLawgbook().getNumActivities();x++){
-          currentTime += getLawgbook().sorted.get (x).getTime();
-          if (currentTime > getLawgbook().getLessonTime()){
-            break;
-          }
-          list.add (getLawgbook().sorted.get(x));
-          }
+          list.addAll (getLawgbook().sorted.subList (0,num));
           getLawgbook().addLesson (new Lesson (title,new Date (System.currentTimeMillis()),list));
           JOptionPane.showMessageDialog (this,"You've successfuly made a lesson.","Lesson Created",JOptionPane.INFORMATION_MESSAGE);
         }
