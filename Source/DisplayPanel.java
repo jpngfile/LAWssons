@@ -9,6 +9,10 @@ import javax.swing.GroupLayout;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.IOException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
@@ -37,6 +41,14 @@ public class DisplayPanel extends JPanel implements ActionListener
    */
   JLabel titleLabel;
   /**
+   * Label to display how many weeks are in the class left.
+   */
+  JLabel weekLabel;
+  /**
+   * Background image for the display.
+   */
+  BufferedImage img;
+  /**
    * The constructor of the panel to set up the table,buttons, and all formatting.
    */
   public DisplayPanel ()
@@ -49,6 +61,7 @@ public class DisplayPanel extends JPanel implements ActionListener
      //This is later determined by the lawgbook this is connected to
     titleLabel = new JLabel (model.getLawgbook().getTitle());
     //Is this needed?
+    weekLabel = new JLabel ("Week " + model.getLawgbook().getWeeksPassed() + "/" + model.getLawgbook().getTotalWeeks());
     JScrollPane scrollpane = new JScrollPane (table);
     table.setFillsViewportHeight (true);
     
@@ -80,6 +93,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     layout.setHorizontalGroup (layout.createParallelGroup ()
                                  .addComponent (titleLabel)
                                  .addComponent (dateLabel)
+                                 .addComponent (weekLabel)
                                  .addComponent (scrollpane)
                                  .addGroup (layout.createSequentialGroup ()
                                               .addComponent (updateButton)
@@ -97,6 +111,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     layout.setVerticalGroup (layout.createSequentialGroup ()
                                .addComponent (titleLabel)
                                .addComponent (dateLabel)
+                               .addComponent (weekLabel)
                                .addComponent (scrollpane)
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (updateButton)
@@ -113,6 +128,13 @@ public class DisplayPanel extends JPanel implements ActionListener
                             );   
     setLayout (layout);
     //add (scrollpane);
+    try
+   {
+    img = ImageIO.read (getClass().getResourceAsStream ("Background.png")); 
+   }
+   catch (IOException e)
+   {
+   }
     setVisible (true);
     
   }
@@ -302,6 +324,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     }
     model.setRowCount (getLawgbook().getNumActivities());
     titleLabel.setText (getLawgbook().getTitle());
+    weekLabel.setText ("Week " + getLawgbook().getWeeksPassed() + "/" + getLawgbook().getTotalWeeks());
     table.updateUI ();
   }
   
@@ -336,6 +359,11 @@ public class DisplayPanel extends JPanel implements ActionListener
    }
   }
   
+  public void paintComponent (Graphics g)
+  {
+   super.paintComponent (g);
+   g.drawImage (img,0,0,null);
+  }
   /**
    * Panel for interface when edkiting activities for time and equipment.
    */

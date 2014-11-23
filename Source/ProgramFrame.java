@@ -4,6 +4,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.CardLayout;
@@ -96,6 +97,9 @@ public class ProgramFrame extends JFrame implements ActionListener
     saveItem.addActionListener (this);
     saveAsItem.addActionListener (this);
     quitItem.addActionListener (this);
+    
+    ImageIcon icon = new ImageIcon ("icon.png");
+    setIconImage (icon.getImage());
     setLocation (200,100);
     addWindowListener (new WindowAdapter ()
                          {
@@ -114,6 +118,7 @@ public class ProgramFrame extends JFrame implements ActionListener
     FileNameExtensionFilter filter = new FileNameExtensionFilter ("Lawg files","lawg");
     fileChooser.setFileFilter (filter);
     fileChooser.addChoosableFileFilter (filter);//necessary?
+    //System.out.println (display.getSize());
   }
   
   @Override

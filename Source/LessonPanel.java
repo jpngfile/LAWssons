@@ -266,7 +266,7 @@ public class LessonPanel extends JPanel implements ActionListener
     for (int x = 0;x < aList.length;x++){
       data [x][0] = aList[x].toString();
       data [x][1] = aList[x].getTime();
-      System.out.println (aList[x].getItemCount());
+      //System.out.println (aList[x].getItemCount());
       for (int y = 0;y < aList[x].getItemCount();y++){
         items.add (aList[x].getItems().get(y));
       }
