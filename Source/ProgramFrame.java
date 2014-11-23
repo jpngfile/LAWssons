@@ -257,7 +257,8 @@ public class ProgramFrame extends JFrame implements ActionListener
   public boolean saveAs ()
   {
     File file;
-    fileChooser.showSaveDialog (this);
+    int fileChoice = fileChooser.showSaveDialog (this);
+    if (fileChoice == JFileChooser.APPROVE_OPTION){
     file = fileChooser.getSelectedFile();   
     //format the file
     if (file != null){
@@ -270,6 +271,7 @@ public class ProgramFrame extends JFrame implements ActionListener
       if (choice == JOptionPane.YES_OPTION){
         return save (newFile);
       }
+    }
     }
     return false;
   }

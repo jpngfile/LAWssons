@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.ListModel;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
@@ -212,10 +213,23 @@ public class LessonPanel extends JPanel implements ActionListener
     else if (a.equals ("Print"))
     {
       Printer p = new Printer ();
-      for (int x = 0;x < getNumActivities();x++)
+      p.println (classLabel.getText());
+      p.println ("Activity","Time","Equipment");
+      ListModel<String> model = itemList.getModel();
+      int lines = Math.max (getNumActivities(),model.getSize());
+      for (int x = 0;x < lines;x++)
       {
-        p.println (lawgbook.getLessons().get(index).getActivities().get(x).toString());
+        if (x >= model.getSize()){
+        p.println (lawgbook.getLessons().get(index).getActivities().get(x).toString(),Integer.toString(lawgbook.getLessons().get(index).getActivities().get(x).getTime()),"");
+        }
+        else if (x >= getNumActivities()){
+          p.println ("","",model.getElementAt (x));
+        }
+        else{
+           p.println (lawgbook.getLessons().get(index).getActivities().get(x).toString(),Integer.toString(lawgbook.getLessons().get(index).getActivities().get(x).getTime()),model.getElementAt (x));
+        }
       }
+      p.println (lawgbook.getLessons().get(index).getComments());
       p.printUsingDialog();
     }
     else if (a.equals ("Return"))

@@ -3,57 +3,57 @@
   <project autorefresh="false" main="LawssonsRunner" manifest="" root="" work="">
     <createjar file="LAWssons_Beta1.jar" flags="13"/>
     <source>
-      <file active="true" name="ProgramFrame.java" package="" timestamp="23-Nov-2014 00:17:47">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+      <file active="true" name="LessonPanel.java" package="" timestamp="23-Nov-2014 14:49:13">
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="Student.java" package="" timestamp="30-Oct-2014 22:47:05">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="Printer.java" package="" timestamp="30-Oct-2014 11:59:25">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="IntroPanel.java" package="" timestamp="30-Oct-2014 16:50:48">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="LawssonsRunner.java" package="" timestamp="30-Oct-2014 19:57:10">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="NewTableModel.java" package="" timestamp="08-Nov-2014 23:25:26">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="ClassInputPanel.java" package="" timestamp="08-Nov-2014 23:25:26">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="LessonInputPanel.java" package="" timestamp="08-Nov-2014 23:25:26">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="Lawgbook.java" package="" timestamp="22-Nov-2014 18:22:20">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="Activity.java" package="" timestamp="22-Nov-2014 18:31:37">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
       <file name="Lesson.java" package="" timestamp="22-Nov-2014 19:09:54">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
-      <file name="LessonPanel.java" package="" timestamp="22-Nov-2014 23:32:24">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+      <file name="ProgramFrame.java" package="" timestamp="23-Nov-2014 00:38:57">
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
-      <file name="DisplayPanel.java" package="" timestamp="23-Nov-2014 00:16:13">
-        <select from="3732" to="3732"/>
-        <scroll column="1693" row="0"/>
+      <file name="DisplayPanel.java" package="" timestamp="23-Nov-2014 14:48:31">
+        <select from="8653" to="8653"/>
+        <scroll column="3486" row="0"/>
       </file>
     </source>
     <included/>

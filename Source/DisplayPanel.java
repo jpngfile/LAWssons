@@ -208,10 +208,6 @@ public class DisplayPanel extends JPanel implements ActionListener
           ac.setItems (i);
         }
       }
-              for (int x = 0;x < getLawgbook().getNumActivities();x++)
-        {
-      System.out.println (getLawgbook().getActivities().get(x).getItemCount());
-              }
     }
     else if (a.equals ("Print"))
     {
@@ -359,13 +355,15 @@ public class DisplayPanel extends JPanel implements ActionListener
    }
   }
   
+  @Override
   public void paintComponent (Graphics g)
   {
    super.paintComponent (g);
    g.drawImage (img,0,0,null);
   }
+  
   /**
-   * Panel for interface when edkiting activities for time and equipment.
+   * Panel for interface when editing activities for time and equipment.
    */
   private class ActivityEditPanel extends JPanel implements ItemListener,ActionListener
   {
