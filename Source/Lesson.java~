@@ -21,10 +21,7 @@ public class Lesson
    * The list of activities this lesson contains.
    */
   private ArrayList<Activity> activities;
-  /**
-   * Comments associated with this lesson.
-   */
-  private String comments;
+  
   /**
    * Constructor of this lesson, setting data with the given title, date, and arrayList of activities.
    * 
@@ -37,22 +34,6 @@ public class Lesson
     this.title = title;
     this.activities = activities;
     this.date = date;
-  }
-  
-  /**
-   * Constructor of this lesson, setting data with the given title, date, and arrayList of activities.
-   * 
-   * @param title The title of this lesson.
-   * @param date The date this lesson was made.
-   * @param activities The list of activities for this lesson to contain.
-   * @param comments The comments associated with this lesson.
-   */
-  public Lesson (String title,Date date, ArrayList<Activity> activities,String comments)
-  {
-    this.title = title;
-    this.activities = activities;
-    this.date = date;
-    this.comments = comments;
   }
   
   /**
@@ -124,25 +105,6 @@ public class Lesson
     title = newTitle;
   }
   
-  /**
-   * Sets the comments of this lesson.
-   * 
-   * @param The comment associated with the lesson.
-   */
-  public void setComments (String comment)
-  {
-    comments = comment;
-  }
-  
-   /**
-   * Returns the comments of this lesson.
-   * 
-   * @return The comment associated with the lesson.
-   */
-  public String getComments ()
-  {
-    return comments;
-  }
   /**
    * Returns the title of this lesson.
    * 

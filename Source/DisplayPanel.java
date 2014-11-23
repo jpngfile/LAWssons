@@ -4,12 +4,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import javax.swing.GroupLayout;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.sql.Date;
@@ -59,6 +62,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     JButton makeLessonButton = new JButton ("Make lesson");
     JButton seeLessonButton = new JButton ("See lessons");
     JButton updateButton = new JButton ("Update");
+    JButton editActivityButton = new JButton ("Edit Activity");
     
     addStudentButton.addActionListener (this);
     addActivityButton.addActionListener (this);
@@ -69,6 +73,7 @@ public class DisplayPanel extends JPanel implements ActionListener
     makeLessonButton.addActionListener (this);
     seeLessonButton.addActionListener (this);
     updateButton.addActionListener (this);
+    editActivityButton.addActionListener (this);
     GroupLayout layout = new GroupLayout (this);
     layout.setAutoCreateGaps (true);
     layout.setAutoCreateContainerGaps (true);
@@ -83,7 +88,7 @@ public class DisplayPanel extends JPanel implements ActionListener
                                               
                                               .addComponent (removeStudentButton)
                                               .addComponent (removeActivityButton)
-                                              
+                                              .addComponent (editActivityButton)
                                               //.addComponent (changeDateButton)
                                               .addComponent (makeLessonButton)
                                               .addComponent (seeLessonButton)
@@ -100,7 +105,7 @@ public class DisplayPanel extends JPanel implements ActionListener
                                             
                                             .addComponent (removeStudentButton)
                                             .addComponent (removeActivityButton)
-                                            
+                                            .addComponent (editActivityButton)
                                             //.addComponent (changeDateButton)
                                             .addComponent (makeLessonButton)
                                             .addComponent (seeLessonButton)
@@ -160,6 +165,31 @@ public class DisplayPanel extends JPanel implements ActionListener
         model.removeActivity (activityName);
         //System.out.println ("removed activity : " + activityName);
         repaint ();} 
+    }
+    else if (a.equals ("Edit Activity"))
+    {
+      ActivityEditPanel panel = new ActivityEditPanel ();
+      int choice = JOptionPane.showConfirmDialog (this, panel, "Edit Activity",JOptionPane.OK_CANCEL_OPTION);
+      if (choice == JOptionPane.OK_OPTION)
+      {
+        panel.refreshStatus();//save the current activity open
+        for (int x = 0;x < getLawgbook().getNumActivities();x++)
+        {
+          Activity ac = getLawgbook().getActivities().get(x);
+          ac.setTime (panel.times [x]);
+          JComboBox s = panel.itemBoxes.get(x);
+          ArrayList<String> i = new ArrayList<String>();
+          for (int y = 0;y < s.getItemCount();y++)
+          {
+            i.add ((String)s.getItemAt (y));
+          }
+          ac.setItems (i);
+        }
+      }
+              for (int x = 0;x < getLawgbook().getNumActivities();x++)
+        {
+      System.out.println (getLawgbook().getActivities().get(x).getItemCount());
+              }
     }
     else if (a.equals ("Print"))
     {
@@ -304,5 +334,136 @@ public class DisplayPanel extends JPanel implements ActionListener
    {
      return (Lesson)lessonBox.getSelectedItem ();
    }
+  }
+  
+  /**
+   * Panel for interface when edkiting activities for time and equipment.
+   */
+  private class ActivityEditPanel extends JPanel implements ItemListener,ActionListener
+  {
+    ArrayList<JComboBox> itemBoxes;
+    JComboBox<Activity> aBox;
+    JComboBox itemBox;
+    int [] times;
+    int aNum = 0;
+    String [] tempItems;
+    JTextField itemField = new JTextField (10);
+    JTextField timeField = new JTextField (10);
+    public ActivityEditPanel ()
+    {
+      //Initialize all components
+      aBox = new JComboBox <Activity> (getLawgbook().getActivities().toArray (new Activity[0]));
+      itemBoxes = new ArrayList<JComboBox>();
+      times = new int [getLawgbook().getNumActivities()];
+      tempItems = new String [getLawgbook().getNumActivities()];
+      int index = 0;
+      for (Activity a : getLawgbook().getActivities())
+      {
+        try{
+        itemBoxes.add (new JComboBox<String> (a.getItems().toArray (new String [0])));
+        }
+        catch (NullPointerException e)
+        {
+          itemBoxes.add (new JComboBox<String>());
+        }
+        times [index] = a.getTime();
+        index++;        
+      }
+      itemBox = new JComboBox<String> (itemBoxes.get(0).getModel());
+      timeField.setText (Integer.toString (times [0]));
+      //Create additional components
+      JLabel subLabel = new JLabel ("Equipment");
+      JLabel timeLabel = new JLabel ("Time");
+      JButton addButton = new JButton ("Add");
+      JButton removeButton = new JButton ("Remove");
+      JButton setButton = new JButton ("Set");
+      
+      addButton.addActionListener (this);
+      removeButton.addActionListener (this);
+      setButton.addActionListener (this);
+      aBox.addItemListener (this);
+      //use layout manager to organize components
+      GroupLayout layout = new GroupLayout (this);
+      layout.setAutoCreateContainerGaps (true);
+      layout.setAutoCreateGaps (true);
+      layout.setHorizontalGroup (layout.createParallelGroup()
+                                   .addComponent (aBox)
+                                   .addComponent (subLabel)
+                                   .addGroup (layout.createSequentialGroup ()
+                                                .addComponent (itemField)
+                                                .addComponent (addButton))
+                                   .addGroup (layout.createSequentialGroup()
+                                                .addComponent (itemBox)
+                                                .addComponent (removeButton))
+                                   .addComponent (timeLabel)
+                                   .addGroup (layout.createSequentialGroup()
+                                                .addComponent (timeField)
+                                                .addComponent (setButton))
+                                   );
+      layout.setVerticalGroup (layout.createSequentialGroup ()
+                                  .addComponent (aBox)
+                                   .addComponent (subLabel)
+                                   .addGroup (layout.createParallelGroup ()
+                                                .addComponent (itemField)
+                                                .addComponent (addButton))
+                                   .addGroup (layout.createParallelGroup()
+                                                .addComponent (itemBox)
+                                                .addComponent (removeButton))
+                                 .addComponent (timeLabel)
+                                   .addGroup (layout.createParallelGroup()
+                                                .addComponent (timeField)
+                                                .addComponent (setButton))
+                                   );
+      setLayout (layout);
+      setVisible (true);
+    }
+    
+    public void actionPerformed (ActionEvent ae)
+    {
+      String a = ae.getActionCommand ();
+      if (a.equals ("Add")){
+        String s = itemField.getText();
+        if (s != null && !s.equals ("")){
+          itemBox.addItem (s);
+          itemField.setText ("");
+        }
+      }
+      else if (a.equals ("Remove")){
+        itemBox.removeItem (itemBox.getSelectedItem());       
+      }
+      else if (a.equals ("Set")){
+        String s = timeField.getText();
+        if (NewTableModel.isNumeric (s)){
+          times [aNum] = Integer.parseInt (s);
+          //some kind of confirmation message
+        }
+        else
+        {
+          //Error message
+        }
+      }
+    }
+    
+    public void refreshStatus ()
+    {
+       
+      itemBoxes.get (aNum).setModel (itemBox.getModel());
+//      itemBoxes.get (aNum).removeAllItems();
+//      System.out.println (aNum);
+//     for (int x = 0;x < itemBox.getItemCount();x++)
+//     {
+//       itemBoxes.get (aNum).addItem (itemBox.getItemAt (x));
+//     }
+      int i = aBox.getSelectedIndex();
+      itemBox.setModel(itemBoxes.get (i).getModel());
+      timeField.setText (Integer.toString (times [i]));
+      itemField.setText("");
+      aNum = i;
+    }
+    public void itemStateChanged (ItemEvent e)
+    {
+      //if the activity has changed, set the boxes accordingly 
+     refreshStatus();
+    }
   }
 }

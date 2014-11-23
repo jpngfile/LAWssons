@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 /**
  * Data class for storing information on class activities.
  * 
@@ -16,12 +17,22 @@ public class Activity
  private int completed;
  
  /**
+  * List of equipment for this activity.
+  */
+ private ArrayList<String> items;
+ /**
+  * Time to execute this activity. Default time is 5 minutes.
+  */
+ private int time;
+ /**
   * Standard constructor given no information. This is not used in the program.
   */
  public Activity ()
  {
    name = null;
    completed = 0;
+   time = 5;
+   items = new ArrayList<String>();
  }
  
  /**
@@ -33,6 +44,8 @@ public class Activity
  {
   this.name = name;
   completed = 0;
+  time = 5;
+  items = new ArrayList<String>();
  }
   
  /**
@@ -45,6 +58,8 @@ public class Activity
  {
    this.name = name;
    this.completed = completed;
+   time = 5;
+  items = new ArrayList<String>();
  }
  
  /**
@@ -91,6 +106,36 @@ public class Activity
  public int getCompleted ()
  {
    return completed;
+ }
+ 
+ /**
+  * Returns the list of items for this activity.
+  * 
+  * @return The ArrayList of items as part of this activity.
+  */
+ public ArrayList<String> getItems ()
+ {
+   return items;
+ }
+ 
+ /**
+  * Returns the time this activity requires.
+  * 
+  * @return The time in minutes this activity requires.
+  */
+ public int getTime ()
+ {
+   return time;
+ }
+ 
+ /**
+  * Sets the amount of time in minutes this activity needs.
+  * 
+  * @param The amount of time in minutes the activity needs.
+  */
+ public void setTime (int newTime)
+ {
+   time = newTime;
  }
  
  /**

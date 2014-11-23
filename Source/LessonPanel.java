@@ -3,13 +3,21 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JTextArea;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.GroupLayout;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+//Will have to change from list to a table.
 /**
  * Panel for displaying the lessons of a class.
  * 
@@ -23,9 +31,17 @@ public class LessonPanel extends JPanel implements ActionListener
    */
   JLabel classLabel;
   /**
-   * List to display the activities of the current lesson.
+   * Table to display the activities and their time.
    */
-  JList<Activity> list;
+  JTable list;
+  /**
+   * Text area to display the list of equipment needed.
+   */
+  JList<String> itemList;
+  /**
+   * Text area to write comments about the lesson.
+   */
+  JTextArea commentArea;
   /**
    * Reference to the lawgbook to access the lessons.
    */
@@ -34,7 +50,10 @@ public class LessonPanel extends JPanel implements ActionListener
    * The index of the lesson being displayed.
    */
   int index = 0;
-  
+  /**
+   * Names of the table columns for displaying activities.
+   */
+  public static final Object [] columnNames = {"Activity","Time"};
   /**
    * Constructor for the panel setting up the components and layout.
    * 
@@ -47,8 +66,27 @@ public class LessonPanel extends JPanel implements ActionListener
     lawgbook = l;
     setSize (d);
     classLabel = new JLabel ("Class");
-    
-    list = new JList<Activity>(new Activity[0]);
+    JLabel itemLabel = new JLabel ("Equipment");
+    JLabel commentLabel = new JLabel ("Comments");
+    list = new JTable();
+    JScrollPane display = new JScrollPane (list);
+    itemList = new JList<String>(new String [0]);
+    commentArea = new JTextArea();
+    commentArea.setLineWrap (true);
+    commentArea.getDocument().addDocumentListener (new DocumentListener (){
+      public void removeUpdate (DocumentEvent e)
+      {
+        lawgbook.getLessons().get(index).setComments (commentArea.getText());
+      }
+      public void insertUpdate (DocumentEvent e)
+      {
+        lawgbook.getLessons().get(index).setComments (commentArea.getText());
+      }
+      public void changedUpdate (DocumentEvent e)
+      {
+        lawgbook.getLessons().get(index).setComments (commentArea.getText());
+      }
+    });
     JButton previousButton = new JButton ("Previous");
     JButton editButton = new JButton ("Edit");
     JButton printButton = new JButton ("Print");
@@ -66,8 +104,15 @@ public class LessonPanel extends JPanel implements ActionListener
     layout.setAutoCreateGaps (true);
     layout.setAutoCreateContainerGaps (true);
     layout.setHorizontalGroup (layout.createParallelGroup ()
-                                 .addComponent (classLabel)
-                                 .addComponent (list)
+                                 .addComponent (classLabel)                                              
+                                 .addGroup (layout.createSequentialGroup()
+                                              .addComponent (display)
+                                              .addGroup (layout.createParallelGroup()
+                                                           .addComponent (itemLabel)
+                                                           .addComponent (itemList))
+                                              .addGroup (layout.createParallelGroup()
+                                                           .addComponent (commentLabel)
+                                                           .addComponent (commentArea)))
                                  .addGroup (layout.createSequentialGroup ()
                                               .addComponent (previousButton)
                                               .addComponent (editButton)
@@ -79,7 +124,14 @@ public class LessonPanel extends JPanel implements ActionListener
                               );
     layout.setVerticalGroup (layout.createSequentialGroup()
                                .addComponent (classLabel)
-                               .addComponent (list)
+                               .addGroup (layout.createParallelGroup()
+                                            .addComponent (display)
+                                            .addGroup (layout.createSequentialGroup ()
+                                                         .addComponent (itemLabel)
+                                                         .addComponent (itemList))
+                                            .addGroup (layout.createSequentialGroup ()
+                                                         .addComponent (commentLabel)
+                                                         .addComponent (commentArea)))
                                .addGroup (layout.createParallelGroup ()
                                             .addComponent (previousButton)
                                             .addComponent (editButton)
@@ -108,10 +160,10 @@ public class LessonPanel extends JPanel implements ActionListener
    * depreciated.
    * @param newList List to set the list data to.
    */
-  public void setList (ArrayList<Activity> newList)
-  {
-    list.setListData (newList.toArray(new Activity [0]));
-  }
+//  public void setList (ArrayList<Activity> newList)
+//  {
+//    list.setListData (newList.toArray(new Activity [0]));
+//  }
   
   /**
    * Implementation for actionListener interface. Sets actions for each button.
@@ -137,7 +189,8 @@ public class LessonPanel extends JPanel implements ActionListener
       int choice = JOptionPane.showConfirmDialog (this,panel,"Editing",JOptionPane.OK_CANCEL_OPTION);
       if (choice == JOptionPane.OK_OPTION){        
         l.setActivities (panel.getRemoveActivities());
-        setList (panel.getRemoveActivities ());
+        //setList (panel.getRemoveActivities ());
+        setData (index);
         lawgbook.setSaved (false);
       }
     }
@@ -151,7 +204,7 @@ public class LessonPanel extends JPanel implements ActionListener
       }
       else{
         if (index == lawgbook.getNumLessons ()){
-         index--; 
+          index--; 
         }
         setData (index);
       }
@@ -185,16 +238,16 @@ public class LessonPanel extends JPanel implements ActionListener
    * 
    * @return The amount of activities in the current lesson.
    */
-public int getNumActivities ()
-{
-  return lawgbook.getLessons().get(index).getActivities().size();
-}
-
-/**
- * Returns the index of the current lesson
- * 
- * @return The index of the current lesson
- */
+  public int getNumActivities ()
+  {
+    return lawgbook.getLessons().get(index).getActivities().size();
+  }
+  
+  /**
+   * Returns the index of the current lesson
+   * 
+   * @return The index of the current lesson
+   */
   public int getIndex ()
   {
     return index;
@@ -206,9 +259,21 @@ public int getNumActivities ()
    * @param index The index of the lesson to be shown.
    */
   public void setData (int index)
-  {
+  {    
     Activity [] aList = (Activity [])(lawgbook.getLessons().get(index).getActivities().toArray(new Activity [0]));
-    list.setListData (aList);
+    Object [][]data = new Object [aList.length][2];
+    ArrayList<String> items = new ArrayList<String>();
+    for (int x = 0;x < aList.length;x++){
+      data [x][0] = aList[x].toString();
+      data [x][1] = aList[x].getTime();
+      System.out.println (aList[x].getItemCount());
+      for (int y = 0;y < aList[x].getItemCount();y++){
+        items.add (aList[x].getItems().get(y));
+      }
+    }
+    list.setModel (new DefaultTableModel(data,columnNames));
+    itemList.setListData (items.toArray(new String [0]));
+    commentArea.setText (lawgbook.getLessons().get(index).getComments());
     setName (lawgbook.getLessons().get(index).getTitle());
   }
   
@@ -323,6 +388,8 @@ public int getNumActivities ()
      * 
      * @param original The original ArrayList to remove activites from.
      * @param remove The ArrayList to check for duplicates of.
+     * 
+     * @return The origianl arrayList without any of the activities of the second
      */
     public ArrayList<Activity> removeActivities (ArrayList<Activity> original, ArrayList<Activity> remove)
     {

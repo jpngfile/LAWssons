@@ -16,6 +16,10 @@ import java.text.DateFormat;
 public class Lawgbook
 {
   /**
+   * List of the global primitive data types.
+   */
+  final static String [] variableList = {"Title","TotalWeeks","WeeksPassed","ActivityMin","LessonTime"};
+  /**
    * List containing all student data.
    */
   ArrayList<Student> students = new ArrayList<Student>();
@@ -218,6 +222,21 @@ public class Lawgbook
   }
   
   /**
+   * Returns the activity with the given name.
+   * 
+   * @param name The name of the activity.
+   * @return the Activity with the given name. If the activity can't be found, null is returned.
+   */
+  public Activity getActivity (String name)
+  {
+    for (Activity a : getActivities()){
+      if (a.toString().equals (name)){
+      return a;
+      }
+    }
+    return null;
+  }
+  /**
    * Returns the Student at the given index.
    * 
    * @param index The index to retrieve the Student from.
@@ -290,6 +309,24 @@ public class Lawgbook
   public void addActivity (String name,int completed)
   {
     Activity a = new Activity (name,completed);
+    activities.add (a);
+    for (Student s : students)
+    {
+      s.addRanking (a,0); 
+    }
+    rankActivities();
+  }
+  
+  /**
+   * Adds a new activity to the data given name and the amount of times it has been taught.
+   * All students set the rank for this Activity as 0 and the Activity priority ranking is refreshed.
+   * This method is used when reading in previously saved data.
+   * 
+   * @param name The name for the Activity.
+   * @param completed The amount of times this Activity is set to have been taught.
+   */
+  public void addActivity (Activity a)
+  {
     activities.add (a);
     for (Student s : students)
     {

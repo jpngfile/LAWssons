@@ -118,6 +118,26 @@ public class Activity
    return items;
  }
  
+  /**
+  * Sets the list of items for this activity.
+  * 
+  * @param The ArrayList of items for this activity.
+  */
+ public void setItems (ArrayList<String> i)
+ {
+   items = i;
+ }
+ 
+ /**
+  * Returns the amount of items this activity requires.
+  * 
+  * @return the amount of items in the item arrayList
+  */
+ public int getItemCount ()
+ {
+   return items.size();
+ }
+ 
  /**
   * Returns the time this activity requires.
   * 
@@ -158,8 +178,10 @@ public class Activity
  @Override
  public boolean equals (Object b)
  {
+   if (b != null){
    if (b.toString().equals (getName()))
      return true;
+   }
    return false;
  }
 }

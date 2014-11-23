@@ -57,6 +57,10 @@ public class Lawgbook
    */
   int activityMin;
   /**
+   * The duration in minutes of a single lesson.
+   */
+  int lessonTime;
+  /**
    * The file that is used to represent this lawgbook when saving.
    */
   File fileName;
@@ -104,6 +108,87 @@ public class Lawgbook
     title = newTitle;
   }
   
+    /**
+   * Sets the minimum amount of times each activity needs to be taught. This affects lesson priority ranking.
+   *
+   * @param num The number to set the minimum amount of times to teach each activity.
+   */
+  public void setActivityMin (int num)
+  {
+    activityMin = num; 
+  }
+  
+  /**
+   * Returns the minimum amount of times each activity needs to be taught.
+   *
+   * @return The minimum amount of times to teach each activity.
+   */
+  public int getActivityMin ()
+  {
+    return activityMin;
+  }
+  
+  /**
+   * Sets the amount of weeks that have passed since the creation of this lawgbook. This is tracked by the amount of times
+   * the lawgbook has been updated with a lesson.
+   * 
+   * @param num Number to set the amount of weeks that have passed.
+   */
+  public void setWeeksPassed (int num)
+  {
+    weeksPassed = num;
+  }
+  
+  /**
+   * Returns the amount of weeks that have passed since the creation of this lawgbook. This is tracked by the amount of times
+   * the lawgbook has been updated with a lesson.
+   * 
+   * @return The amount of weeks that have passed.
+   */
+  public int getWeeksPassed ()
+  {
+    return weeksPassed;
+  }
+  
+  /**
+   * Sets the amount of weeks the class runs for. This affects activity priority.
+   * 
+   * @param num The amount of weeks this class will run for.
+   */
+  public void setTotalWeeks (int num)
+  {
+    totalWeeks = num;
+  }
+  
+  /**
+   * Returns the amount of weeks the class runs for. This affects activity priority.
+   * 
+   * @return The amount of weeks this class will run for.
+   */
+  public int getTotalWeeks ()
+  {
+    return totalWeeks;
+  }
+  
+  /**
+   * Sets the length of a lesson.
+   * 
+   * @param The length in minutes of a lesson.
+   */
+  public void setLessonTime (int newLessonTime)
+  {
+    lessonTime = newLessonTime;
+  }
+  
+  /**
+   * Returns the duration of a lesson.
+   * 
+   * @return The time in minutes of a single lesson.
+   */
+  public int getLessonTime ()
+  {
+    return lessonTime;
+  }
   /**
    * Creates an empty arraylist of activities of the given size.
    * 
@@ -398,68 +483,6 @@ public class Lawgbook
   public ArrayList<Lesson> getLessons ()
   {
     return lessons;
-  }
-  
-  /**
-   * Sets the minimum amount of times each activity needs to be taught. This affects lesson priority ranking.
-   *
-   * @param num The number to set the minimum amount of times to teach each activity.
-   */
-  public void setActivityMin (int num)
-  {
-    activityMin = num; 
-  }
-  
-  /**
-   * Returns the minimum amount of times each activity needs to be taught.
-   *
-   * @return The minimum amount of times to teach each activity.
-   */
-  public int getActivityMin ()
-  {
-    return activityMin;
-  }
-  
-  /**
-   * Sets the amount of weeks that have passed since the creation of this lawgbook. This is tracked by the amount of times
-   * the lawgbook has been updated with a lesson.
-   * 
-   * @param num Number to set the amount of weeks that have passed.
-   */
-  public void setWeeksPassed (int num)
-  {
-    weeksPassed = num;
-  }
-  
-  /**
-   * Returns the amount of weeks that have passed since the creation of this lawgbook. This is tracked by the amount of times
-   * the lawgbook has been updated with a lesson.
-   * 
-   * @return The amount of weeks that have passed.
-   */
-  public int getWeeksPassed ()
-  {
-    return weeksPassed;
-  }
-  
-  /**
-   * Sets the amount of weeks the class runs for. This affects activity priority.
-   * 
-   * @param num The amount of weeks this class will run for.
-   */
-  public void setTotalWeeks (int num)
-  {
-    totalWeeks = num;
-  }
-  
-  /**
-   * Returns the amount of weeks the class runs for. This affects activity priority.
-   * 
-   * @return The amount of weeks this class will run for.
-   */
-  public int getTotalWeeks ()
-  {
-    return totalWeeks;
   }
   
   /**

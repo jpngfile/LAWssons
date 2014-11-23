@@ -21,6 +21,8 @@ import java.io.FileReader;
 import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 /**
  * The primary JFrame for containing the program.
  * FileIO is executed from here.
@@ -125,12 +127,12 @@ public class ProgramFrame extends JFrame implements ActionListener
     else if (a.equals ("Save"))
     {
       if (display.getLawgbook().getTitle() != null)
-      saveFile();
+        saveFile();
     }
     else if (a.equals ("SaveAs"))
     {
       if (display.getLawgbook().getTitle() != null)
-      saveAs();
+        saveAs();
     }
     else if (a.equals ("Open"))
     {
@@ -187,16 +189,27 @@ public class ProgramFrame extends JFrame implements ActionListener
       //write info here
       Lawgbook l = display.getLawgbook();
       out.println ("Lawssons File: to be read by the Lawssons program");
-      out.println (l.getTitle());
-      out.println (l.getTotalWeeks());
-      out.println (l.getWeeksPassed());
-      out.println (l.getActivityMin());
-      out.println (l.getLessonTime());
+      for (String s : Lawgbook.variableList)
+      {
+        try{
+          Method method = l.getClass().getMethod ("get" + s);
+          out.println (method.invoke (l));
+        }
+        catch (SecurityException a){}
+        catch (NoSuchMethodException b){}
+        catch (IllegalArgumentException c){}
+        catch (IllegalAccessException d){}
+        catch (InvocationTargetException e){}             
+      }
       out.println (l.getNumActivities());
       for (Activity a : l.getActivities()){
         out.println (a.getName());
         out.println (a.getCompleted());
         out.println (a.getTime());
+        out.println (a.getItemCount());
+        for (String s : a.getItems()){
+          out.println (s);
+        }
       }
       //amount of rankings is equal to the amount of activites
       out.println (l.getNumStudents());
@@ -215,6 +228,7 @@ public class ProgramFrame extends JFrame implements ActionListener
         for (Activity a : f.getActivities ()){
           out.println (a.getName());
         }
+        out.println (f.getComments());
       }
       out.println ("End of File");
       out.close();
@@ -279,18 +293,18 @@ public class ProgramFrame extends JFrame implements ActionListener
         lessons.addAll (l.getLessons());
         final String oldTitle = l.getTitle();
         final int [] stats = new int []{l.getTotalWeeks(),l.getWeeksPassed(),l.getActivityMin(),l.getLessonTime()};
-       class Restore {
-        public  void restoreData (){
-          l.clearData();
-          l.getActivities().addAll(a);
-          l.getStudents().addAll (st);
-          l.getLessons().addAll (lessons);
-          l.setTitle (oldTitle);
-          l.setTotalWeeks (stats [0]);
-          l.setWeeksPassed (stats[1]);
-          l.setActivityMin (stats [2]);
-          l.setLessonTime (stats [3]);
-        }
+        class Restore {
+          public  void restoreData (){
+            l.clearData();
+            l.getActivities().addAll(a);
+            l.getStudents().addAll (st);
+            l.getLessons().addAll (lessons);
+            l.setTitle (oldTitle);
+            l.setTotalWeeks (stats [0]);
+            l.setWeeksPassed (stats[1]);
+            l.setActivityMin (stats [2]);
+            l.setLessonTime (stats [3]);
+          }
         }
         try{
           BufferedReader in = new BufferedReader (new FileReader (file));        
@@ -307,7 +321,15 @@ public class ProgramFrame extends JFrame implements ActionListener
             String name = in.readLine ();
             int completed = Integer.parseInt (in.readLine ());
             int time = Integer.parseInt (in.readLine());
-            l.addActivity (name,completed);
+            int numItems = Integer.parseInt (in.readLine ());
+            ArrayList<String> items = new ArrayList<String>();
+            for (int y = 0;y < numItems;y++){
+              items.add (in.readLine());
+            }
+            Activity ac = new Activity (name,completed);
+            ac.setTime (time);
+            ac.setItems (items);
+            l.addActivity (ac);
           }
           int numStudents = Integer.parseInt (in.readLine ());
           for (int x = 0;x < numStudents;x++){
@@ -328,9 +350,10 @@ public class ProgramFrame extends JFrame implements ActionListener
             int listLength = Integer.parseInt (in.readLine ());
             ArrayList<Activity> list = new ArrayList<Activity>();
             for (int y = 0;y < listLength;y++){
-              list.add (new Activity (in.readLine ()));
+              list.add (l.getActivity (in.readLine()));
             }
-            l.addLesson (new Lesson (title,newDate,list));
+            String comments = in.readLine ();
+            l.addLesson (new Lesson (title,newDate,list,comments));
           }
           in.readLine ();//footer
           in.close(); 
@@ -345,7 +368,7 @@ public class ProgramFrame extends JFrame implements ActionListener
         {
           JOptionPane.showMessageDialog (this,"File could not be found.","File IO error",JOptionPane.ERROR_MESSAGE);
         }
-//        //could clear this up with a nested method
+        //could clear this up with a nested method
 //        catch (NumberFormatException n)
 //        {
 //          (new Restore()).restoreData ();
